@@ -1,2 +1,12 @@
-# ck-style-website
-CK STYLE is a modern fashion and tailoring web platform designed to bridge clients and custom garment creation through precise measurements, curated collections, and a premium digital experience.  
+# CK STYLE
+
+A custom fashion and tailoring platform for professional measurements and bespoke designs.
+
+## Features
+- Guided body measurements
+- Secure user profiles
+- Fashion collections
+
+## Tech Stack
+- HTML, CSS, JavaScript
+- Supabase (Auth + Database)
