@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | Premium Custom Fashion</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Swiper for Testimonials Carousel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/navbar-engine.js"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%);
+        }
+
+        .hero-bg-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        .hero-bg-animation::before,
+        .hero-bg-animation::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-color);
+            filter: blur(100px);
+        }
+
+        .hero-bg-animation::before {
+            width: 500px;
+            height: 500px;
+            top: -200px;
+            right: -200px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .hero-bg-animation::after {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            left: -150px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            letter-spacing: -3px;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+
+        /* Product Showcase Section */
+        .product-showcase {
+            padding: 100px 0;
+            background: var(--bg-card);
+        }
+
+        .showcase-card {
+            background: var(--bg-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .showcase-img {
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+
+        .showcase-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease;
+        }
+
+        .showcase-card:hover .showcase-img img {
+            transform: scale(1.1);
+        }
+
+        .showcase-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent-color);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .showcase-price {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            color: var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* Measurement Section */
+        .measurement-section {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .measurement-card {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b770 100%);
+            border-radius: 30px;
+            padding: 60px 40px;
+            color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .measurement-card::before {
+            content: '📏';
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.1;
+            right: -50px;
+            top: -50px;
+            line-height: 1;
+        }
+
+        .measurement-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .measurement-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .measurement-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            background: #000;
+            color: var(--accent-color);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Why Section */
+        .why-section {
+            padding: 100px 0;
+        }
+
+        .why-card {
+            padding: 40px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+
+        .why-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .why-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 100px 0;
+            background: var(--bg-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonials-swiper {
+            padding: 40px 20px 60px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            height: auto;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-stars {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b770 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .author-info h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .author-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .quote-icon {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 4rem;
+            opacity: 0.1;
+            color: var(--accent-color);
+        }
+
+        /* Swiper Pagination */
+        .swiper-pagination-bullet {
+            background: var(--text-muted);
+            opacity: 0.3;
+            width: 10px;
+            height: 10px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--accent-color);
+            opacity: 1;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Swiper Navigation */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--accent-color);
+            width: 50px;
+            height: 50px;
+            background: var(--bg-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+        }
+
+        .swiper-button-next:after,
+        .swiper-button-prev:after {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="main-nav"></nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="hero-bg-animation"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" data-gsap="fadeUp">Redefining Elegance</h1>
+                <p class="hero-subtitle" data-gsap="fadeUp" data-delay="0.2">
+                    Experience the pinnacle of custom-made fashion. Tailored to your unique style, crafted with
+                    precision.
+                </p>
+                <div class="hero-btns" data-gsap="fadeUp" data-delay="0.4">
+                    <a href="collection.html" class="btn btn-primary btn-lg px-5">Explore Collection</a>
+                    <a href="measure-me.html" class="btn btn-outline-gold btn-lg px-5">Get Measured</a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">Scroll to Discover</div>
+    </header>
+
+    <!-- Featured Product Showcase -->
+    <section class="product-showcase" id="featured-product">
+        <div class="container">
+            <h2 class="section-title" data-gsap="fadeUp">Featured Masterpiece</h2>
+            <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
+                Handpicked excellence from our premium collection
+            </p>
+            <div id="product-container" class="text-center">
+                <div class="spinner-border text-gold" role="status"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Measurement Service -->
+    <section class="measurement-section">
+        <div class="container">
+            <div class="measurement-card" data-gsap="scale">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 measurement-content">
+                        <h2 class="measurement-title">Professional Measurements, Perfectly Organized</h2>
+                        <p class="measurement-subtitle">Get your measurements taken and stored securely - absolutely
+                            FREE</p>
+                        <ul class="feature-list">
+                            <li>Expert guidance through every measurement</li>
+                            <li>Secure cloud storage for easy access</li>
+                            <li>Multiple profiles for different occasions</li>
+                            <li>Download as PDF, CSV, or Image anytime</li>
+                        </ul>
+                        <a href="measure-me.html" class="btn btn-dark btn-lg px-5">Start Measuring - FREE</a>
+                    </div>
+                    <div class="col-lg-5 text-center d-none d-lg-block">
+                        <div style="font-size: 10rem; opacity: 0.3;">📐</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why CK STYLE -->
+    <section class="why-section">
+        <div class="container">
+            <h2 class="section-title" data-gsap="fadeUp">Why CK STYLE?</h2>
+            <div class="row g-4">
+                <div class="col-md-4" data-gsap="fadeUp" data-delay="0">
+                    <div class="why-card text-center">
+                        <span class="why-icon">✂️</span>
+                        <h3 class="h4 mb-3">Custom Fit</h3>
+                        <p class="text-muted">Every piece is handcrafted to your exact measurements for a perfect fit,
+                            every time.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-gsap="fadeUp" data-delay="0.1">
+                    <div class="why-card text-center">
+                        <span class="why-icon">👔</span>
+                        <h3 class="h4 mb-3">Premium Fabrics</h3>
+                        <p class="text-muted">We source only the finest materials from around the globe to ensure
+                            lasting quality.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-gsap="fadeUp" data-delay="0.2">
+                    <div class="why-card text-center">
+                        <span class="why-icon">⭐</span>
+                        <h3 class="h4 mb-3">Expert Design</h3>
+                        <p class="text-muted">Our designers blend traditional craftsmanship with modern fashion trends.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title" data-gsap="fadeUp">What Our Clients Say</h2>
+            <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
+                Real experiences from our valued customers
+            </p>
+
+            <div class="swiper testimonials-swiper">
+                <div class="swiper-wrapper">
+                    <!-- Testimonial 1 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "CK STYLE transformed my wardrobe! The custom fit is absolutely perfect, and the quality
+                                is unmatched. I've received countless compliments on my suits. Highly recommend!"
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">JD</div>
+                                <div class="author-info">
+                                    <h4>John Doe</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "The measurement service made everything so easy! My wedding dress fit like a dream. The
+                                team was professional, attentive, and the final product exceeded all expectations."
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">SM</div>
+                                <div class="author-info">
+                                    <h4>Sarah Mitchell</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "Outstanding craftsmanship and attention to detail. I ordered a traditional outfit and
+                                the fabric quality is exceptional. CK STYLE is my go-to for all special occasions!"
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">MK</div>
+                                <div class="author-info">
+                                    <h4>Michael Kamga</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 4 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "I was amazed by how simple the measurement process was! The staff guided me perfectly,
+                                and my suit arrived exactly as promised. Perfect fit, premium quality!"
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">EN</div>
+                                <div class="author-info">
+                                    <h4>Emmanuel Nkeng</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 5 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "Best decision ever! The team is incredibly talented. My gown was stunning and fit
+                                perfectly. I felt like royalty. Thank you CK STYLE for making my day special!"
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">GF</div>
+                                <div class="author-info">
+                                    <h4>Grace Fon</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 6 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">"</div>
+                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                            <p class="testimonial-text">
+                                "From consultation to delivery, everything was seamless. The quality, the fit, the style
+                                - all perfect! CK STYLE has earned a loyal customer for life."
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">PT</div>
+                                <div class="author-info">
+                                    <h4>Peter Tabe</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="swiper-pagination"></div>
+
+                <!-- Navigation -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="glass py-4 mt-5">
+        <div class="container text-center">
+            <p class="text-muted mb-0">&copy; 2026 CK STYLE. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Homepage Script -->
+    <script src="js/homepage.js"></script>
+    <!-- Homepage Flip-In Animations Logic -->
+    <style>
+        /* Scoped Animation Styles - Homepage Only */
+        .ck-flip-container {
+            perspective: 1200px;
+            perspective-origin: center;
+        }
+
+        .ck-flip-target {
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+        }
+
+        /* Direction: Even (Top-Left) */
+        .ck-flip-left {
+            transform: translate3d(-40px, -40px, 0) rotateX(15deg) rotateY(-15deg);
+        }
+
+        /* Direction: Odd (Top-Right) */
+        .ck-flip-right {
+            transform: translate3d(40px, -40px, 0) rotateX(15deg) rotateY(15deg);
+        }
+
+        /* Active State */
+        .ck-flip-active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            .ck-flip-target {
+                transition: opacity 0.8s ease !important;
+                transform: none !important;
+            }
+
+            .ck-flip-active {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        (function () {
+            // Safety: Ensure we are only on index.html
+            if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/' && !window.location.pathname.endsWith('/')) {
+                return;
+            }
+
+            const observerOptions = {
+                root: null,
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const scrollObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('ck-flip-active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const applyAnimationToElement = (el, index = 0) => {
+                if (el.classList.contains('ck-flip-target')) return;
+
+                el.classList.add('ck-flip-target');
+
+                // Determine direction
+                if (el.classList.contains('showcase-card')) {
+                    el.classList.add('ck-flip-left'); // Single items default left
+                } else if (index % 2 === 0) {
+                    el.classList.add('ck-flip-left');
+                } else {
+                    el.classList.add('ck-flip-right');
+                }
+
+                const parent = el.parentElement;
+                if (parent) parent.classList.add('ck-flip-container');
+
+                scrollObserver.observe(el);
+            };
+
+            const initFlipAnimations = () => {
+                // Static elements
+                const staticTargets = document.querySelectorAll('.measurement-card, .why-card, .testimonial-card');
+                staticTargets.forEach((el, i) => applyAnimationToElement(el, i));
+
+                // Dynamic elements observer (for .showcase-card loaded by homepage.js)
+                const mutationObserver = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === 1) { // Element
+                                const dynamicTargets = node.querySelectorAll('.showcase-card') || [];
+                                if (node.classList.contains('showcase-card')) {
+                                    applyAnimationToElement(node);
+                                }
+                                dynamicTargets.forEach(el => applyAnimationToElement(el));
+                            }
+                        });
+                    });
+                });
+
+                mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+                // Check if showcase-card already exists (e.g. if loaded very fast)
+                document.querySelectorAll('.showcase-card').forEach(el => applyAnimationToElement(el));
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initFlipAnimations);
+            } else {
+                initFlipAnimations();
+            }
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-color: #0d0d0d;
+    --accent-color: #d4af37;
+    /* Metallic Gold */
+    --accent-alt: #b8860b;
+    /* Dark Goldenrod */
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --bg-main: #0a0a0a;
+    --bg-main-rgb: 10, 10, 10;
+    --bg-card: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --btn-text: #0d0d0d;
+    /* Text on Gold buttons */
+}
+
+/* Light Mode Overrides */
+[data-theme="light"] {
+    --primary-color: #ffffff;
+    --text-main: #1a1a1a;
+    --text-muted: #555555;
+    --bg-main: #fcfcfc;
+    --bg-main-rgb: 252, 252, 252;
+    --bg-card: rgba(0, 0, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --btn-text: #ffffff;
+    /* Contrast fix for light mode */
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image:
+        repeating-radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0px, transparent 2px, rgba(255, 255, 255, 0.03) 4px, transparent 8px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
+    background-size: 12px 12px, 4px 4px, 4px 4px;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+[data-theme="light"] body {
+    background-image:
+        repeating-radial-gradient(circle at center, rgba(0, 0, 0, 0.03) 0px, transparent 2px, rgba(0, 0, 0, 0.03) 4px, transparent 8px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px);
+}
+
+/* Glassmorphism Classes */
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+}
+
+/* Navbar Enhancement */
+.navbar {
+    padding: clamp(0.8rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem);
+    transition: var(--transition);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--accent-color) !important;
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 400;
+    margin: 0 1rem;
+    transition: var(--transition);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--accent-color) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--accent-color);
+    border: none;
+    color: var(--primary-color);
+    /* Correct: Text on gold should be dark in dark mode */
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+[data-theme="light"] .btn-primary {
+    color: #fff;
+    /* Ensure white text on gold in light mode for better pop if gold is dark enough, else dark */
+}
+
+.btn-primary:hover {
+    background: var(--accent-alt);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+}
+
+.btn-outline-gold {
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    background: transparent;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.btn-outline-gold:hover {
+    background: var(--accent-color);
+    color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+[data-theme="light"] .hero-section {
+    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('../assets/hero-bg.jpg');
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    line-height: 1.1;
+    background: linear-gradient(to right, var(--text-main), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+}
+
+.hero-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Form Styles */
+.form-control {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    background: var(--bg-card);
+    border-color: var(--accent-color);
+    box-shadow: none;
+    color: var(--text-main);
+}
+
+.form-label {
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+/* Container Spacing */
+.section-padding {
+    padding: clamp(60px, 10vw, 100px) 0;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}

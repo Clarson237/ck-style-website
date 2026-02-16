@@ -1,0 +1,180 @@
+/* 
+ * CK STYLE - Signature Tailored Navbar Styles
+ * Branding: Fashion, Craftsmanship, Premium Tailoring
+ */
+
+:root {
+    --nav-height: 80px;
+    --stitch-color: rgba(212, 175, 55, 0.4);
+    /* Gold stitch */
+    --thread-width: 2px;
+}
+
+/* Fabric Texture (Linen Weave) */
+.tailored-navbar {
+    min-height: var(--nav-height);
+    background-color: var(--bg-main);
+    /* Base Layer + Woven Texture */
+    background-image:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 3px);
+    background-size: 4px 4px;
+
+    /* Double Stitch Border */
+    border-bottom: 2px dashed var(--stitch-color);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    /* Diffused fabric shadow */
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    transition: var(--transition);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+[data-theme="light"] .tailored-navbar {
+    background-color: rgba(252, 252, 252, 0.95);
+    background-image:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 3px);
+    border-bottom: 2px dashed rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* Secondary Stitch Line (Hem Effect) */
+.tailored-navbar::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    /* Interior stitch */
+    left: 0;
+    right: 0;
+    height: 1px;
+    border-bottom: 1px dotted var(--stitch-color);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Brand Identity */
+.navbar-brand {
+    color: var(--accent-color) !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.navbar-brand:hover {
+    color: var(--accent-alt) !important;
+    transform: scale(1.02);
+}
+
+/* Navigation Links */
+.tailored-nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.85rem;
+    position: relative;
+    padding: 0.5rem 1rem;
+    transition: var(--transition);
+}
+
+.tailored-nav-link:hover,
+.tailored-nav-link.active {
+    color: var(--accent-color) !important;
+}
+
+/* Thread Underline Animation */
+.tailored-nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--accent-color);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.tailored-nav-link:hover::before,
+.tailored-nav-link.active::before {
+    width: 70%;
+}
+
+/* Icons / Decorations */
+.nav-decoration {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.needle-thread {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2l14 14M5 2s0 1 1 2M19 16l3 3"/></svg>') no-repeat center;
+    background-size: contain;
+}
+
+/* Mobile Menu Button */
+.tailored-toggler {
+    border: 1px dashed var(--stitch-color);
+    padding: 8px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.tailored-toggler:hover {
+    background: var(--bg-card);
+}
+
+/* User Dropdown Premium */
+.tailored-dropdown {
+    background: var(--bg-main) !important;
+    border: 1px dashed var(--stitch-color) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    margin-top: 10px !important;
+}
+
+.dropdown-item {
+    color: var(--text-muted) !important;
+    padding: 10px 20px !important;
+    transition: var(--transition) !important;
+}
+
+.dropdown-item:hover {
+    background: var(--bg-card) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Pulsing Animation for Important Buttons */
+@keyframes pulse-gold {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+    }
+}
+
+.animate-pulse {
+    animation: pulse-gold 2s infinite;
+}

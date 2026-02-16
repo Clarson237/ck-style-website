@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | Masterpieces</title>
+    <!-- Core UI & Motion -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+
+    <!-- Supabase & Auth -->
+    <!-- Core Theme Engine -->
+    <script src="js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/navbar-engine.js"></script>
+
+    <style>
+        :root {
+            --gold: #c5a059;
+            --dark-bg: var(--bg-main, #050505);
+            --glass: var(--bg-card, rgba(255, 255, 255, 0.03));
+            --glass-border: var(--glass-border, rgba(255, 255, 255, 0.08));
+            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            --text-main: #f5f5f5;
+            --text-muted: #adb5bd;
+        }
+
+        [data-theme="light"] {
+            --dark-bg: var(--bg-main, #f8f9fa);
+            --glass: var(--bg-card, rgba(0, 0, 0, 0.04));
+            --glass-border: var(--glass-border, rgba(0, 0, 0, 0.1));
+            --text-main: #1a1a1a;
+            --text-muted: #555555;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background-image: none !important;
+            /* Clean Laboratory/Gallery Backdrop */
+        }
+
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .section-header {
+            padding: 120px 0 60px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1;
+            color: var(--text-main);
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        /* Filter System */
+        .filter-container {
+            margin-bottom: 50px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: #888;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            margin: 5px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* Masterpiece Cards */
+        .masterpiece-card {
+            background: var(--bg-main, #0a0a0a);
+            /* Solid background to hide fabric */
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            height: 100%;
+            background-image: none !important;
+        }
+
+        [data-theme="light"] .masterpiece-card {
+            background: #ffffff;
+        }
+
+        .masterpiece-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .card-img-wrap {
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            /* Deep solid black for dark mode */
+            background-image: none !important;
+        }
+
+        [data-theme="light"] .card-img-wrap {
+            background: #f0f0f0;
+            /* Soft solid grey for light mode */
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s ease;
+            background-image: none !important;
+        }
+
+        .masterpiece-card:hover .card-img {
+            transform: scale(1.1);
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
+        .card-body-content {
+            padding: 25px;
+        }
+
+        .category-pill {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .btn-gallery {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .btn-gallery:hover {
+            background: var(--accent-color, #c5a059);
+            color: #000;
+            border-color: var(--accent-color, #c5a059);
+        }
+
+        [data-theme="light"] .btn-gallery:hover {
+            color: #fff;
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .btn-wa:hover {
+            background: #128C7E;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Fullscreen Gallery */
+        .gallery-modal {
+            background: #000 !important;
+        }
+
+        .carousel-item {
+            background: #000;
+        }
+
+        .carousel-item img {
+            height: 90vh;
+            object-fit: contain;
+            background-color: #000;
+        }
+
+        .close-gallery {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-bar {
+            width: 100px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0;
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+        }
+
+        .diag-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            color: #0f0;
+            font-family: monospace;
+            z-index: 5000;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader">
+        <h2 class="hero-subtitle mb-4">AUTHENTICATING COLLECTION</h2>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+
+    <nav id="main-nav"></nav>
+
+    <div class="container">
+        <div class="section-header text-center">
+            <h5 class="hero-subtitle mb-3" data-gsap="reveal">CURATED ELEGANCE</h5>
+            <h1 class="hero-title mb-4" data-gsap="reveal">THE MASTERPIECES</h1>
+            <div class="filter-container d-flex flex-wrap justify-content-center" data-gsap="reveal">
+                <button class="filter-btn active" data-cat="all">All Masterpieces</button>
+                <button class="filter-btn" data-cat="Traditional">Traditional</button>
+                <button class="filter-btn" data-cat="Suits">Corporate Suits</button>
+                <button class="filter-btn" data-cat="Casual">Modern Casual</button>
+                <button class="filter-btn" data-cat="Wedding">Wedding</button>
+            </div>
+        </div>
+
+        <div id="masterpiece-grid" class="row g-5 pb-5">
+            <!-- Dynamic Content -->
+        </div>
+
+        <div id="no-content" class="text-center py-5 d-none">
+            <h2 class="text-muted opacity-50">No published masterpieces found in this category.</h2>
+        </div>
+    </div>
+
+    <!-- Gallery Portal -->
+    <div class="modal fade gallery-modal" id="galleryModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content bg-black border-0">
+                <button class="close-gallery" data-bs-dismiss="modal">×</button>
+                <div class="modal-body d-flex align-items-center justify-content-center p-0">
+                    <div id="mainCarousel" class="carousel slide w-100 h-100" data-bs-ride="false">
+                        <div class="carousel-inner h-100" id="carousel-items"></div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-5 mt-5 border-top border-secondary opacity-50">
+        <div class="container text-center">
+            <p class="small">&copy; 2026. CK STYLE BESPOKE. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <div id="diag" class="diag-box"></div>
+
+    <!-- Core Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const grid = document.getElementById('masterpiece-grid');
+            const noContent = document.getElementById('no-content');
+            const diag = document.getElementById('diag');
+            const galleryModal = new bootstrap.Modal(document.getElementById('galleryModal'));
+            let allData = [];
+
+            const log = (msg) => {
+                const line = document.createElement('div');
+                line.textContent = `> ${msg}`;
+                diag.appendChild(line);
+                console.log(msg);
+            };
+
+            const animateEntrance = () => {
+                gsap.from('[data-gsap="reveal"]', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.2,
+                    ease: "power4.out"
+                });
+            };
+
+            const renderMasterpieces = (category = 'all') => {
+                const filtered = category === 'all' ? allData : allData.filter(d => d.category === category);
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '';
+                    noContent.classList.remove('d-none');
+                    return;
+                }
+
+                noContent.classList.add('d-none');
+                grid.innerHTML = filtered.map((item, idx) => {
+                    const extra = item.collection_images ? item.collection_images.map(img => img.image_url) : [];
+                    const images = [];
+                    if (item.image_url) images.push(item.image_url);
+                    images.push(...extra);
+
+                    const safeImages = images.filter(u => u && u.startsWith('http')).map(u => u.trim());
+                    const cover = safeImages[0] || 'https://via.placeholder.com/800x1200?text=CK+STYLE';
+                    const priceFormatted = item.price_fcfa ? new Intl.NumberFormat().format(item.price_fcfa) + ' FCFA' : 'On Request';
+
+
+                    // 1. Construct the Final WhatsApp URL
+                    const waText = encodeURIComponent(`I am highly interested in the CK Masterpiece: "${item.title}"\nPrice: ${priceFormatted}\nLink: ${window.location.href}`);
+                    const finalWaLink = `https://wa.me/237671002411?text=${waText}`;
+
+                    // 2. Construct the Tracking URL (Intermediate Page)
+                    const trackingUrl = `log-lead.html?url=${encodeURIComponent(finalWaLink)}&title=${encodeURIComponent(item.title)}&price=${encodeURIComponent(priceFormatted)}`;
+
+                    return `
+                    <div class="col-lg-4 col-md-6 masterpiece-item" data-cat="${item.category}">
+                        <div class="masterpiece-card" data-animation-idx="${idx}">
+                            <div class="card-img-wrap">
+                                <img src="${cover}" class="card-img" alt="${item.title}" onerror="this.src='https://via.placeholder.com/800x1200?text=CK+MASTERPIECE'">
+                                ${item.price_fcfa ? `<div class="price-tag">${priceFormatted}</div>` : ''}
+                            </div>
+                            <div class="card-body-content">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="category-pill">${item.category}</span>
+                                    <span class="small opacity-50">${safeImages.length} Photos</span>
+                                </div>
+                                <h3 class="h4 fw-bold mb-3">${item.title}</h3>
+                                <p class="small text-muted mb-4" style="line-height: 1.8;">${item.description || 'A timeless creation of style, quality, and legacy.'}</p>
+                                
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <button class="btn-gallery" onclick='viewGallery(${JSON.stringify(safeImages)})'>View Gallery</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="${trackingUrl}" target="_blank" class="btn-wa">Buy via WA</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+                gsap.from('.masterpiece-card', {
+                    rotateX: -10,
+                    y: 30,
+                    opacity: 0,
+                    stagger: 0.1,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+            };
+
+            window.viewGallery = (images) => {
+                const carousel = document.getElementById('carousel-items');
+                carousel.innerHTML = images.map((u, i) => `
+                    <div class="carousel-item ${i === 0 ? 'active' : ''} h-100">
+                        <img src="${u}" class="d-block w-100" style="object-fit: contain;">
+                    </div>
+                `).join('');
+                galleryModal.show();
+            };
+
+            const init = async () => {
+                if (!window.supabaseClient) {
+                    setTimeout(init, 200);
+                    return;
+                }
+
+                gsap.to('.loader-progress', { width: '60%', duration: 1 });
+                log('Connecting to Master Server...');
+
+                const { data, error } = await window.supabaseClient
+                    .from('collections')
+                    .select('*, collection_images(image_url)')
+                    .eq('visibility', 'published')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    log(`DATA ERROR: ${error.message}`);
+                    document.getElementById('loader').innerHTML = `<h5 class="text-danger">CONNECTION FAILURE: ${error.message}</h5>`;
+                    return;
+                }
+
+                allData = data;
+                log(`Masterpieces Synced: ${allData.length}`);
+
+                gsap.to('.loader-progress', {
+                    width: '100%',
+                    duration: 0.5,
+                    onComplete: () => {
+                        gsap.to('#loader', {
+                            yPercent: -100,
+                            duration: 1,
+                            ease: "power4.inOut",
+                            onComplete: () => {
+                                document.getElementById('loader').remove();
+                                animateEntrance();
+                                renderMasterpieces();
+                            }
+                        });
+                    }
+                });
+            };
+
+            // Filter logic
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelector('.filter-btn.active').classList.remove('active');
+                    btn.classList.add('active');
+                    renderMasterpieces(btn.dataset.cat);
+                };
+            });
+
+            // Toggle Diagnostic
+            if (new URLSearchParams(window.location.search).has('debug')) diag.style.display = 'block';
+
+            init();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | Measurement Database</title>
+    <!-- Core Security & Theme -->
+    <script src="../js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/navbar-engine.js"></script>
+    <script src="js/admin-core.js"></script>
+
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --admin-card-bg: var(--bg-card, rgba(255, 255, 255, 0.03));
+            --admin-accent: #c5a059;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-main, #0a0a0a);
+            color: var(--text-main, #ffffff);
+        }
+
+        .sidebar-link {
+            color: #888;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(197, 160, 89, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .premium-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 1.25rem;
+            border: none;
+        }
+
+        .premium-table td {
+            padding: 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ccc;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--admin-accent);
+            color: white;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body class="bg-main">
+    <nav id="main-nav"></nav>
+
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="glass p-4 rounded-4 sticky-top" style="top: 100px;">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-4 ls-1">System Management</h6>
+                    <nav class="nav flex-column gap-2">
+                        <a class="sidebar-link" href="index.html">Dashboard Overview</a>
+                        <a class="sidebar-link" href="collections.html">Manage Collections</a>
+                        <a class="sidebar-link active" href="measurements.html">Measurement Database</a>
+                        <a class="sidebar-link" href="users.html">User Accounts</a>
+                        <a class="sidebar-link" href="audit.html">System Audit</a>
+                        <hr class="border-secondary my-3">
+                        <a class="sidebar-link text-danger" href="#"
+                            onclick="(async () => { await supabaseClient.auth.signOut(); window.location.href='../login.html'; })()">Sign
+                            Out</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <div class="animate-fade-up">
+                    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+                        <div>
+                            <h2 class="fw-bold mb-1">Measurement Database</h2>
+                            <p class="text-muted">Access and export client measurement profiles.</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-success btn-sm" onclick="exportExcel()">
+                                📊 Export Excel
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="exportCSV()">
+                                📄 Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="glass p-3 rounded-3 mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" id="searchInput" class="form-control search-box"
+                                    placeholder="Search by name, email, or profile...">
+                            </div>
+                            <div class="col-md-3">
+                                <select id="genderFilter" class="form-select search-box">
+                                    <option value="all">All Genders</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="unitFilter" class="form-select search-box">
+                                    <option value="all">All Units</option>
+                                    <option value="cm">CM</option>
+                                    <option value="inch">Inch</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="premium-table">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Client</th>
+                                        <th>Profile</th>
+                                        <th>Stats</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="measurement-list">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="spinner-border text-gold spinner-border-sm" role="status"></div>
+                                            <span class="ms-2 text-muted">Loading measurements...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-3 border-top border-white-10 d-flex justify-content-between text-muted small">
+                            <span id="record-count">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content glass border-0 text-white">
+                <div class="modal-header border-bottom border-white-10">
+                    <h5 class="modal-title">Measurement Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modal-content">
+                        <div class="text-center">Loading...</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-white-10">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="modal-download-btn">Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Store data globally for filtering and export
+        let allMeasurements = [];
+        let filteredMeasurements = [];
+        let itemsMap = {}; // Map measurement_id -> items array
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const whenSupabaseReady = (fn) => {
+                if (window.supabaseClient) fn();
+                else window.addEventListener('supabase-ready', fn, { once: true });
+            };
+
+            whenSupabaseReady(async () => {
+                const supabase = window.supabaseClient;
+                const listBody = document.getElementById('measurement-list');
+                const countSpan = document.getElementById('record-count');
+
+                try {
+                    // 1. Fetch all measurements
+                    const { data: measurements, error: mError } = await supabase
+                        .from('measurements')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (mError) throw mError;
+
+                    if (!measurements || measurements.length === 0) {
+                        listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No measurements found in database.</td></tr>';
+                        countSpan.textContent = '0 Records';
+                        return;
+                    }
+
+                    // 2. Fetch User Profiles to get Emails (using user_id)
+                    const userIds = [...new Set(measurements.map(m => m.user_id))];
+                    const { data: profiles, error: pError } = await supabase
+                        .from('profiles')
+                        .select('id, email') // Assuming profiles has email, else we might not get it easily
+                        .in('id', userIds);
+
+                    // Create Email Map
+                    const emailMap = {};
+                    if (profiles) {
+                        profiles.forEach(p => emailMap[p.id] = p.email);
+                    }
+
+                    // 3. Fetch all measurement items for export details
+                    // Ideally we fetch items only when needed, but for export we need all.
+                    // Let's fetch all items for these measurements
+                    const measurementIds = measurements.map(m => m.id);
+                    const { data: items, error: iError } = await supabase
+                        .from('measurement_items')
+                        .select('*')
+                        .in('measurement_id', measurementIds);
+
+                    if (items) {
+                        items.forEach(i => {
+                            if (!itemsMap[i.measurement_id]) itemsMap[i.measurement_id] = [];
+                            itemsMap[i.measurement_id].push(i);
+                        });
+                    }
+
+                    // 4. Transform Data
+                    allMeasurements = measurements.map(m => ({
+                        ...m,
+                        email: emailMap[m.user_id] || 'Unknown (ID only)',
+                        itemCount: itemsMap[m.id] ? itemsMap[m.id].length : 0
+                    }));
+
+                    filteredMeasurements = [...allMeasurements];
+                    renderTable();
+
+                    // Setup Search
+                    document.getElementById('searchInput').addEventListener('input', filterData);
+                    document.getElementById('genderFilter').addEventListener('change', filterData);
+                    document.getElementById('unitFilter').addEventListener('change', filterData);
+
+                } catch (err) {
+                    console.error('Error loading measurements:', err);
+                    listBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+                }
+            });
+        });
+
+        function filterData() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const gender = document.getElementById('genderFilter').value;
+            const unit = document.getElementById('unitFilter').value;
+
+            filteredMeasurements = allMeasurements.filter(m => {
+                const matchesTerm = m.full_name.toLowerCase().includes(term) ||
+                    m.profile_name.toLowerCase().includes(term) ||
+                    m.email.toLowerCase().includes(term);
+                const matchesGender = gender === 'all' || m.sex === gender;
+                const matchesUnit = unit === 'all' || m.unit === unit;
+                return matchesTerm && matchesGender && matchesUnit;
+            });
+
+            renderTable();
+        }
+
+        function renderTable() {
+            const listBody = document.getElementById('measurement-list');
+            const countSpan = document.getElementById('record-count');
+
+            if (filteredMeasurements.length === 0) {
+                listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No matching records found.</td></tr>';
+                countSpan.textContent = '0 Records';
+                return;
+            }
+
+            listBody.innerHTML = filteredMeasurements.map(m => `
+                <tr>
+                    <td class="text-muted small">${new Date(m.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <div class="fw-bold text-white">${m.full_name}</div>
+                        <div class="small text-muted">${m.email}</div>
+                    </td>
+                    <td>
+                        <span class="badge bg-gold-soft text-gold rounded-pill px-3">${m.profile_name}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex bg-dark rounded-pill px-2 py-1 align-items-center" style="width:fit-content; border:1px solid rgba(255,255,255,0.1)">
+                            <span class="badge border border-secondary text-secondary me-2 rounded-circle p-1" style="min-width:24px">${m.sex === 'male' ? 'M' : 'F'}</span>
+                            <span class="small text-muted me-2">${m.unit.toUpperCase()}</span>
+                            <span class="badge bg-secondary rounded-pill">${m.itemCount} pts</span>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="viewDetails('${m.id}')">View</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            countSpan.textContent = `${filteredMeasurements.length} Record${filteredMeasurements.length !== 1 ? 's' : ''}`;
+        }
+
+        function viewDetails(id) {
+            const m = allMeasurements.find(x => x.id === id);
+            if (!m) return;
+
+            const items = itemsMap[id] || [];
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small">Client Info</h6>
+                        <h4 class="mb-1">${m.full_name}</h4>
+                        <p class="text-gold mb-0">${m.email}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h6 class="text-muted text-uppercase small">Profile</h6>
+                        <h4 class="mb-1">${m.profile_name}</h4>
+                        <span class="badge bg-secondary">${m.sex.toUpperCase()}</span>
+                        <span class="badge bg-primary">${m.unit.toUpperCase()}</span>
+                    </div>
+                </div>
+                
+                <h6 class="text-muted text-uppercase small mb-3 border-bottom border-secondary pb-2">Measurements</h6>
+                <div class="row g-3">
+                    ${items.map(i => `
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 border border-secondary rounded bg-dark">
+                                <div class="small text-muted text-uppercase" style="font-size:0.7rem">${i.measurement_key.replace(/_/g, ' ')}</div>
+                                <div class="fw-bold fs-5 text-gold">${i.measurement_value} <span class="fs-6 text-muted">${m.unit}</span></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="mt-4 pt-3 border-top border-secondary text-center text-muted small">
+                    Record ID: ${m.id}
+                </div>
+            `;
+
+            // Set download handler
+            document.getElementById('modal-download-btn').onclick = () => {
+                alert('PDF generation feature coming soon! Please use CSV export for now.');
+            };
+
+            new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        }
+
+        // --- Export Functions ---
+
+        function flattenDataForExport() {
+            // Flatten the data: One row per measurement item, or one row per profile?
+            // Usually "One row per profile" with wide columns is better for Excel, 
+            // but "One row per item" is better for database analysis.
+            // Let's do "One row per Profile" (Wide Format) as it's more human readable.
+
+            return filteredMeasurements.map(m => {
+                const flat = {
+                    Date: new Date(m.created_at).toISOString().split('T')[0],
+                    FullName: m.full_name,
+                    Email: m.email,
+                    ProfileName: m.profile_name,
+                    Gender: m.sex,
+                    Unit: m.unit,
+                };
+
+                // Add items dynamically
+                const items = itemsMap[m.id] || [];
+                items.forEach(i => {
+                    flat[i.measurement_key] = i.measurement_value;
+                });
+
+                return flat;
+            });
+        }
+
+        function exportCSV() {
+            const data = flattenDataForExport();
+            if (data.length === 0) { alert('No data to export'); return; }
+
+            // Get all unique keys for header
+            const keys = new Set();
+            data.forEach(obj => Object.keys(obj).forEach(k => keys.add(k)));
+            const header = Array.from(keys);
+
+            // CSV Content
+            const check = (val) => val === undefined || val === null ? '' : `"${String(val).replace(/"/g, '""')}"`;
+
+            let csv = header.join(',') + '\n';
+            data.forEach(row => {
+                csv += header.map(k => check(row[k])).join(',') + '\n';
+            });
+
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `CK_Measurements_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportExcel() {
+            const data = flattenDataForExport();
+            if (data.length === 0) { alert('No data to export'); return; }
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Measurements");
+
+            XLSX.writeFile(wb, `CK_Measurements_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+    </script>
+</body>
+
+</html>

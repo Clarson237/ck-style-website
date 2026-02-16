@@ -1,0 +1,319 @@
+/* CK STYLE - Measurement Wizard CSS */
+
+/* Progress Bar */
+.wizard-progress {
+    position: relative;
+    margin-bottom: 3rem;
+    padding: 0 1rem;
+}
+
+.progress-track {
+    background: var(--glass-border);
+    height: 4px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--accent-color);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.step-indicator {
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Wizard Container */
+.wizard-container {
+    min-height: 60vh;
+    position: relative;
+}
+
+/* Step Card */
+.step-card {
+    display: none;
+    /* Hidden by default */
+    animation: fadeIn 0.4s ease-out;
+}
+
+.step-card.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Illustration Area */
+.measure-visual {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    border: 1px solid var(--glass-border);
+}
+
+.measure-visual svg {
+    max-height: 180px;
+    width: auto;
+    opacity: 0.8;
+}
+
+/* Instructions */
+.instruction-box {
+    border-left: 3px solid var(--accent-color);
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.instruction-title {
+    color: var(--text-main);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.instruction-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Unit Toggle */
+.unit-toggle {
+    display: flex;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 4px;
+    width: fit-content;
+    margin: 0 auto 2rem;
+}
+
+.unit-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 8px 24px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.unit-btn.active {
+    background: var(--accent-color);
+    color: var(--primary-color);
+}
+
+/* Big Input */
+.measure-input-group {
+    position: relative;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.measure-input {
+    font-size: 2.5rem;
+    text-align: center;
+    height: auto;
+    padding: 0.5rem;
+    font-weight: 300;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--glass-border);
+    border-radius: 0;
+    color: var(--accent-color);
+}
+
+.measure-input:focus {
+    background: transparent;
+    border-color: var(--accent-color);
+    box-shadow: none;
+    color: var(--accent-color);
+}
+
+.measure-unit-label {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Navigation Buttons */
+.wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    gap: 1rem;
+}
+
+/* Review Table */
+.review-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.review-row {
+    background: rgba(255, 255, 255, 0.02);
+    transition: background 0.2s;
+}
+
+.review-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.review-cell {
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+}
+
+.review-cell:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-right: none;
+}
+
+.review-cell:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-left: none;
+    text-align: right;
+}
+
+.edit-btn {
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .measure-visual {
+        min-height: 150px;
+        padding: 1rem;
+    }
+
+    .instruction-box {
+        padding-left: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Print / PDF Export Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #wizard-container,
+    #wizard-container * {
+        visibility: visible;
+    }
+
+    #wizard-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 2rem;
+        background: white !important;
+        color: black !important;
+    }
+
+    /* Hide non-printable elements */
+    .wizard-progress,
+    .unit-toggle,
+    .wizard-nav,
+    #msg-container,
+    .btn,
+    .edit-btn,
+    nav,
+    footer,
+    .hero-section {
+        display: none !important;
+    }
+
+    /* Print Specific Formatting */
+    .animate-fade-up {
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    .glass {
+        background: none !important;
+        border: 2px solid #000 !important;
+        box-shadow: none !important;
+        color: black !important;
+    }
+
+    h2,
+    h3,
+    h5,
+    .text-muted {
+        color: black !important;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+    }
+
+    td,
+    th {
+        border-bottom: 1px solid #ddd;
+        padding: 1rem;
+        text-align: left;
+    }
+
+    /* Branding for Print */
+    #wizard-container::before {
+        content: "CK STYLE | Custom Measurement Profile";
+        display: block;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid black;
+        padding-bottom: 1rem;
+    }
+
+    #wizard-container::after {
+        content: "Generated on " attr(data-date);
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        margin-top: 2rem;
+        color: #666;
+    }
+}

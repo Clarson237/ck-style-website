@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | Manage Collections</title>
+    <!-- Core Security & Theme -->
+    <script src="../js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/navbar-engine.js"></script>
+    <script src="js/admin-core.js"></script>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --admin-accent: #c5a059;
+            --bg-main: #0a0a0a;
+            --text-main: #ffffff;
+            --glass-bg: rgba(15, 15, 15, 0.98);
+            --form-bg: rgba(255, 255, 255, 0.05);
+            --form-border: rgba(255, 255, 255, 0.1);
+            --form-color: white;
+            --upload-border: rgba(197, 160, 89, 0.2);
+            --upload-hover-bg: rgba(197, 160, 89, 0.05);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f8f9fa;
+            --text-main: #212529;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --form-bg: rgba(0, 0, 0, 0.05);
+            --form-border: rgba(0, 0, 0, 0.1);
+            --form-color: #212529;
+            --upload-border: rgba(197, 160, 89, 0.4);
+            --upload-hover-bg: rgba(197, 160, 89, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        .premium-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 1.25rem;
+            border: none;
+        }
+
+        .premium-table td {
+            padding: 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ccc;
+        }
+
+        .img-preview-sm {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #222;
+        }
+
+        .modal-content.glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--admin-accent);
+            border-radius: 24px;
+        }
+
+        .form-control,
+        .form-select {
+            background: var(--form-bg);
+            border: 1px solid var(--form-border);
+            color: var(--form-color);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: var(--form-bg);
+            border-color: var(--admin-accent);
+            color: var(--form-color);
+            box-shadow: none;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
+            height: 120px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            line-height: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .upload-card {
+            border: 2px dashed var(--upload-border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-card:hover {
+            border-color: var(--admin-accent);
+            background: var(--upload-hover-bg);
+        }
+    </style>
+</head>
+
+<body class="bg-main">
+    <nav id="main-nav"></nav>
+
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="glass p-4 rounded-4 sticky-top" style="top: 100px;">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-4 ls-1">System Management</h6>
+                    <nav class="nav flex-column gap-2">
+                        <a class="sidebar-link" href="index.html">Dashboard Overview</a>
+                        <a class="sidebar-link active" href="collections.html">Manage Collections</a>
+                        <a class="sidebar-link" href="measurements.html">Measurement Database</a>
+                        <a class="sidebar-link" href="users.html">User Accounts</a>
+                        <a class="sidebar-link" href="audit.html">System Audit</a>
+                        <hr class="border-secondary my-3">
+                        <a class="sidebar-link text-danger" href="#"
+                            onclick="(async () => { await supabaseClient.auth.signOut(); window.location.href='../login.html'; })()">Sign
+                            Out</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="fw-bold mb-1">Portfolio Curator</h2>
+                        <p class="text-muted">Manage your premium collections (Multi-Image Enabled).</p>
+                    </div>
+                    <button class="btn btn-primary px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal"
+                        data-bs-target="#colModal" id="add-col-btn">
+                        + Create New Masterpiece
+                    </button>
+                </div>
+
+                <div id="col-msg" class="mb-4"></div>
+
+                <div class="premium-table animate-fade-up">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Cover</th>
+                                    <th>Outfit Title</th>
+                                    <th>Category</th>
+                                    <th>Images</th>
+                                    <th>Price (FCFA)</th>
+                                    <th>Visibility</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="col-list">
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        <div class="spinner-border text-gold spinner-border-sm" role="status"></div>
+                                        <span class="ms-2 text-muted">Curating your collection stream...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div class="modal fade" id="colModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content glass text-white">
+                <div class="modal-header border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0" id="modalTitle">New Collection Entry</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="col-form">
+                        <input type="hidden" id="col-id">
+                        <div class="row g-4">
+                            <!-- Left: Basic Info -->
+                            <div class="col-lg-5">
+                                <h6 class="text-gold small text-uppercase ls-1 mb-4">Identity & Pricing</h6>
+                                <div class="mb-3">
+                                    <label>Masterpiece Title</label>
+                                    <input type="text" id="col-title" class="form-control"
+                                        placeholder="e.g. Royal Gold Agbada" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Category</label>
+                                    <select id="col-category" class="form-select" required>
+                                        <option value="Traditional">Traditional Wear</option>
+                                        <option value="Suits">Corporate Suits</option>
+                                        <option value="Casual">Modern Casual</option>
+                                        <option value="Wedding">Wedding Outfits</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Description (Aura & Legacy)</label>
+                                    <textarea id="col-desc" class="form-control" rows="4"
+                                        placeholder="Highlight the quality, fabric, and spirit..."></textarea>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-8">
+                                        <label>Price (FCFA)</label>
+                                        <input type="number" id="col-price" class="form-control" placeholder="25000">
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Status</label>
+                                        <select id="col-visibility" class="form-select">
+                                            <option value="published">LIVE</option>
+                                            <option value="draft">Draft</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Image Gallery Manager -->
+                            <div class="col-lg-7">
+                                <h6 class="text-gold small text-uppercase ls-1 mb-4">Imagery Manager (Multiple Images)
+                                </h6>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="upload-card h-100"
+                                            onclick="document.getElementById('multi-file-input').click()">
+                                            <div id="upload-icon">⬆️</div>
+                                            <small class="d-block text-muted mt-2" id="upload-status">Add Photo from
+                                                PC</small>
+                                            <input type="file" id="multi-file-input" class="d-none" multiple
+                                                accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group h-100">
+                                            <input type="url" id="link-input" class="form-control"
+                                                placeholder="...or Add Image Link">
+                                            <button type="button" class="btn btn-outline-gold"
+                                                id="add-link-btn">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-dark p-3 rounded-4"
+                                    style="min-height: 280px; background: rgba(0,0,0,0.2) !important;">
+                                    <label class="mb-3 d-block text-muted">Current Gallery (First image is
+                                        Cover)</label>
+                                    <div id="gallery-grid" class="row g-2">
+                                        <div class="col-12 text-center py-5 text-muted opacity-50">No images added yet.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-link text-muted text-decoration-none"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="col-form" id="col-submit"
+                        class="btn btn-primary px-5 py-2 rounded-pill shadow">Save Masterpiece</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme handling is now centralized in navbar-engine.js
+
+            const listBody = document.getElementById('col-list');
+            const colForm = document.getElementById('col-form');
+            const galleryGrid = document.getElementById('gallery-grid');
+            const fileInput = document.getElementById('multi-file-input');
+            const linkInput = document.getElementById('link-input');
+            const addLinkBtn = document.getElementById('add-link-btn');
+            const modal = new bootstrap.Modal(document.getElementById('colModal'));
+
+            let currentGallery = []; // List of image URLs
+
+            const showMsg = (text, type = 'info') => {
+                const msgDiv = document.getElementById('col-msg');
+                msgDiv.innerHTML = `<div class="alert alert-${type} border-0 rounded-4 py-3 animate-fade-up shadow-sm">${text}</div>`;
+                setTimeout(() => msgDiv.innerHTML = '', 5000);
+            };
+
+            const refreshGalleryUI = () => {
+                if (currentGallery.length === 0) {
+                    galleryGrid.innerHTML = '<div class="col-12 text-center py-5 text-muted opacity-50">No images added yet.</div>';
+                    return;
+                }
+                galleryGrid.innerHTML = currentGallery.map((url, idx) => `
+                    <div class="col-3">
+                        <div class="gallery-item shadow-sm">
+                            <img src="${url}" onerror="this.src='https://via.placeholder.com/150?text=Error'">
+                            <button type="button" class="remove-btn" onclick="removeImage(${idx})">×</button>
+                            ${idx === 0 ? '<div class="badge bg-gold position-absolute bottom-0 start-0 w-100 rounded-0" style="font-size: 0.6rem;">COVER</div>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            window.removeImage = (idx) => {
+                currentGallery.splice(idx, 1);
+                refreshGalleryUI();
+            };
+
+            addLinkBtn.onclick = () => {
+                const url = linkInput.value.trim();
+                if (url) {
+                    currentGallery.push(url);
+                    linkInput.value = '';
+                    refreshGalleryUI();
+                }
+            };
+
+            fileInput.onchange = async (e) => {
+                const files = e.target.files;
+                if (!files.length) return;
+
+                const status = document.getElementById('upload-status');
+                const supabase = window.supabaseClient;
+
+                for (let file of files) {
+                    status.innerHTML = `Uploading... (${file.name})`;
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const filePath = `outfits/${fileName}`;
+
+                    const { error } = await supabase.storage.from('collections').upload(filePath, file);
+                    if (!error) {
+                        const { data: { publicUrl } } = supabase.storage.from('collections').getPublicUrl(filePath);
+                        currentGallery.push(publicUrl);
+                        refreshGalleryUI();
+                    }
+                }
+                status.innerHTML = 'Add More Photos';
+                fileInput.value = '';
+            };
+
+            const loadCollections = async () => {
+                const supabase = window.supabaseClient;
+                const { data, error } = await supabase.from('collections').select('*, collection_images(image_url)').order('created_at', { ascending: false });
+
+                if (error) {
+                    listBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Security error: ${error.message}</td></tr>`;
+                    return;
+                }
+
+                listBody.innerHTML = data.map(c => {
+                    const images = c.collection_images ? c.collection_images.map(img => img.image_url) : [];
+                    const cover = c.image_url || (images.length > 0 ? images[0] : '../img/placeholder.jpg');
+
+                    return `
+                    <tr>
+                        <td><img src="${cover}" class="img-preview-sm shadow-sm" onerror="this.src='https://via.placeholder.com/150?text=No+Image'"></td>
+                        <td class="fw-bold text-white">${c.title}</td>
+                        <td><span class="text-gold small fw-bold">${c.category}</span></td>
+                        <td><span class="badge bg-dark border border-secondary">${images.length + (c.image_url ? 1 : 0)} Photos</span></td>
+                        <td>${c.price_fcfa ? new Intl.NumberFormat().format(c.price_fcfa) : '<i>Contact</i>'}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm badge rounded-pill ${c.visibility === 'published' ? 'bg-success-soft text-success' : 'bg-warning-soft text-warning'} border-0 dropdown-toggle" 
+                                        type="button" data-bs-toggle="dropdown">
+                                    ${c.visibility.toUpperCase()}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item small" href="#" onclick="toggleVisibility('${c.id}', 'published')">Set LIVE</a></li>
+                                    <li><a class="dropdown-item small" href="#" onclick="toggleVisibility('${c.id}', 'draft')">Set DRAFT</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-gold border-0 ms-1 edit-btn" data-id="${c.id}">Edit</button>
+                            <button class="btn btn-sm btn-link text-danger border-0 ms-1 delete-btn" data-id="${c.id}" style="text-decoration:none">Delete</button>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+
+                document.querySelectorAll('.edit-btn').forEach(b => b.onclick = () => editCol(b.dataset.id));
+                document.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => deleteCol(b.dataset.id));
+            };
+
+            window.toggleVisibility = async (id, status) => {
+                const supabase = window.supabaseClient;
+                const { error } = await supabase.from('collections').update({ visibility: status }).eq('id', id);
+                if (!error) {
+                    loadCollections();
+                    showMsg(`Status updated to ${status.toUpperCase()}.`, 'success');
+                }
+            };
+
+            const editCol = async (id) => {
+                const supabase = window.supabaseClient;
+                const { data } = await supabase.from('collections').select('*, collection_images(image_url)').eq('id', id).single();
+                if (data) {
+                    document.getElementById('col-id').value = data.id;
+                    document.getElementById('col-title').value = data.title;
+                    document.getElementById('col-category').value = data.category;
+                    document.getElementById('col-desc').value = data.description;
+                    document.getElementById('col-price').value = data.price_fcfa || '';
+                    document.getElementById('col-visibility').value = data.visibility;
+
+                    currentGallery = data.collection_images ? data.collection_images.map(img => img.image_url) : [];
+                    if (data.image_url) currentGallery.unshift(data.image_url); // Put cover at front
+
+                    document.getElementById('modalTitle').textContent = 'Refine Masterpiece';
+                    refreshGalleryUI();
+                    modal.show();
+                }
+            };
+
+            const deleteCol = async (id) => {
+                if (!confirm('Permanent destruction of this record?')) return;
+                const supabase = window.supabaseClient;
+                const { error } = await supabase.from('collections').delete().eq('id', id);
+                if (!error) {
+                    window.logAdminAction('PURGE', 'collections', { id });
+                    loadCollections();
+                    showMsg('Record destroyed.', 'success');
+                }
+            };
+
+            document.getElementById('add-col-btn').onclick = () => {
+                colForm.reset();
+                currentGallery = [];
+                document.getElementById('col-id').value = '';
+                document.getElementById('modalTitle').textContent = 'New Collection Entry';
+                refreshGalleryUI();
+            };
+
+            colForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('col-id').value;
+                const supabase = window.supabaseClient;
+
+                const mainPayload = {
+                    title: document.getElementById('col-title').value,
+                    category: document.getElementById('col-category').value,
+                    description: document.getElementById('col-desc').value,
+                    image_url: currentGallery[0] || null, // First image is cover
+                    price_fcfa: parseFloat(document.getElementById('col-price').value) || null,
+                    visibility: document.getElementById('col-visibility').value
+                };
+
+                let savedId = id;
+                if (id) {
+                    const { error } = await supabase.from('collections').update(mainPayload).eq('id', id);
+                    if (error) { showMsg(error.message, 'danger'); return; }
+                } else {
+                    const { data, error } = await supabase.from('collections').insert(mainPayload).select().single();
+                    if (error) { showMsg(error.message, 'danger'); return; }
+                    savedId = data.id;
+                }
+
+                // Sync Images
+                const { error: delErr } = await supabase.from('collection_images').delete().eq('collection_id', savedId);
+                if (delErr) { console.error("Gallery Delete Error:", delErr); showMsg("Warning: Could not clear old gallery.", "warning"); }
+
+                if (currentGallery.length > 1) {
+                    const imageRows = currentGallery.slice(1).map(url => ({ collection_id: savedId, image_url: url }));
+                    const { error: insErr } = await supabase.from('collection_images').insert(imageRows);
+                    if (insErr) {
+                        console.error("Gallery Insert Error:", insErr);
+                        showMsg("Masterpiece saved, but some secondary images failed to sync.", "warning");
+                    }
+                }
+
+                window.logAdminAction(id ? 'UPDATE' : 'CREATE', 'collections', { id: savedId, ...mainPayload });
+                modal.hide();
+                loadCollections();
+                showMsg('Masterpiece synchronized successfully.', 'success');
+            };
+
+            if (window.supabaseClient) loadCollections();
+            else window.addEventListener('supabase-ready', loadCollections);
+        });
+    </script>
+</body>
+
+</html>

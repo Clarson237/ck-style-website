@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | User Registry</title>
+    <!-- Core Security & Theme -->
+    <script src="../js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/navbar-engine.js"></script>
+    <script src="js/admin-core.js"></script>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --admin-card-bg: var(--bg-card, rgba(255, 255, 255, 0.03));
+            --admin-accent: #c5a059;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-main, #0a0a0a);
+            color: var(--text-main, #ffffff);
+        }
+
+        .sidebar-link {
+            color: #888;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(197, 160, 89, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .premium-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 1.25rem;
+            border: none;
+        }
+
+        .premium-table td {
+            padding: 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body class="bg-main">
+    <nav id="main-nav"></nav>
+
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="glass p-4 rounded-4 sticky-top" style="top: 100px;">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-4 ls-1">System Management</h6>
+                    <nav class="nav flex-column gap-2">
+                        <a class="sidebar-link" href="index.html">Dashboard Overview</a>
+                        <a class="sidebar-link" href="collections.html">Manage Collections</a>
+                        <a class="sidebar-link" href="measurements.html">Measurement Database</a>
+                        <a class="sidebar-link active" href="users.html">User Accounts</a>
+                        <a class="sidebar-link" href="audit.html">System Audit</a>
+                        <hr class="border-secondary my-3">
+                        <a class="sidebar-link text-danger" href="#"
+                            onclick="(async () => { await supabaseClient.auth.signOut(); window.location.href='../login.html'; })()">Sign
+                            Out</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <div class="animate-fade-up">
+                    <div class="d-flex justify-content-between align-items-end mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-1">User Registry</h2>
+                            <p class="text-muted">View registered accounts and administrative roles.</p>
+                        </div>
+                        <button class="btn btn-gold btn-lg px-4" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-person-plus me-2"></i>Add New User
+                        </button>
+                    </div>
+
+                    <div class="premium-table">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Joined</th>
+                                        <th>Actions</th>
+                                        <th class="text-end">ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-list">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="spinner-border text-gold spinner-border-sm" role="status"></div>
+                                            <span class="ms-2 text-muted">Loading profiles...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass border-0 rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Add New User</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="add-user-form">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Email Address</label>
+                            <input type="email" id="new-user-email"
+                                class="form-control bg-dark border-secondary text-white" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Temporary Password</label>
+                            <input type="password" id="new-user-password"
+                                class="form-control bg-dark border-secondary text-white" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Initial Role</label>
+                            <select id="new-user-role" class="form-select bg-dark border-secondary text-white">
+                                <option value="user">Standard User</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-3 fw-bold">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notify User Modal -->
+    <div class="modal fade" id="notifyUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass border-0 rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Send Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="notify-user-form">
+                        <input type="hidden" id="notify-target-id">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Message Title</label>
+                            <input type="text" id="notify-title"
+                                class="form-control bg-dark border-secondary text-white"
+                                placeholder="e.g., Order Update" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Message Content</label>
+                            <textarea id="notify-message" class="form-control bg-dark border-secondary text-white"
+                                rows="4" placeholder="Enter your message here..." required></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Type</label>
+                            <select id="notify-type" class="form-select bg-dark border-secondary text-white">
+                                <option value="info">Information (Blue)</option>
+                                <option value="success">Success (Gold)</option>
+                                <option value="warning">Warning (Orange)</option>
+                                <option value="danger">Urgent (Red)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-3 fw-bold">Send Notification</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const whenSupabaseReady = (fn) => {
+                if (window.supabaseClient) fn();
+                else window.addEventListener('supabase-ready', fn, { once: true });
+            };
+
+            whenSupabaseReady(async () => {
+                const supabase = window.supabaseClient;
+                const listBody = document.getElementById('user-list');
+
+                // Load Users Function
+                async function fetchUsers() {
+                    try {
+                        // Fetch profiles and roles separately (resilient to schema relationship cache issues)
+                        const [profilesRes, rolesRes] = await Promise.all([
+                            supabase.from('profiles').select('*').order('updated_at', { ascending: false }),
+                            supabase.from('user_roles').select('*')
+                        ]);
+
+                        if (profilesRes.error) throw profilesRes.error;
+                        if (rolesRes.error) throw rolesRes.error;
+
+                        const profiles = profilesRes.data;
+                        const roles = rolesRes.data;
+
+                        if (!profiles || profiles.length === 0) {
+                            listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No users found.</td></tr>';
+                            return;
+                        }
+
+                        listBody.innerHTML = profiles.map(p => {
+                            const userRole = roles.find(r => r.user_id === p.id || r.id === p.id);
+                            const role = userRole?.role || 'user';
+                            const roleBadgeClass = (role === 'admin' || role === 'super_admin') ? 'bg-gold-soft text-gold border border-gold' : 'bg-secondary';
+
+                            return `
+                                <tr>
+                                    <td class="fw-medium text-white">${p.email || 'N/A'}</td>
+                                    <td>
+                                        <span class="badge ${roleBadgeClass} rounded-pill px-3">
+                                            ${role.toUpperCase()}
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">${new Date(p.updated_at).toLocaleDateString()}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-outline-gold" onclick="openNotifyModal('${p.id}', '${p.email}')" title="Send Notification">
+                                                <i class="bi bi-bell-fill"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${p.id}', '${p.email}')" title="Delete Records">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="text-end text-muted small font-monospace">${p.id.substring(0, 8)}...</td>
+                                </tr>
+                            `;
+                        }).join('');
+
+                    } catch (err) {
+                        console.error('Error loading users:', err);
+                        listBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+                    }
+                }
+
+                // Initial load
+                fetchUsers();
+
+                // Add User Logic
+                const addForm = document.getElementById('add-user-form');
+                addForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('new-user-email').value;
+                    const password = document.getElementById('new-user-password').value;
+                    const role = document.getElementById('new-user-role').value;
+
+                    try {
+                        // 1. Sign up user (This will create auth entry and profile via trigger)
+                        // Note: Admin stays logged in because we use the existing client which handles session properly
+                        const { data: authData, error: authError } = await supabase.auth.signUp({
+                            email,
+                            password,
+                        });
+
+                        if (authError) throw authError;
+
+                        const newUser = authData.user;
+                        if (!newUser) throw new Error("Failed to create user entry.");
+
+                        // 2. Assign Role if not 'user'
+                        if (role !== 'user') {
+                            const { error: roleError } = await supabase
+                                .from('user_roles')
+                                .insert({ id: newUser.id, user_id: newUser.id, role: role });
+                            if (roleError) console.error("Role assignment error:", roleError);
+                        }
+
+                        // 3. Log Action
+                        await window.logAdminAction('CREATE_USER', 'users', { email, role });
+
+                        alert('User created successfully!');
+                        bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+                        addForm.reset();
+                        fetchUsers();
+
+                    } catch (err) {
+                        alert('Failed to create user: ' + err.message);
+                    }
+                });
+
+                // Delete User Logic (Soft Delete: removes profile/roles)
+                window.deleteUser = async (userId, email) => {
+                    if (!confirm(`Are you sure you want to delete ${email}'s records? This will remove their measurements and profile data. Auth account deletion must be handled in Supabase Dashboard.`)) return;
+
+                    try {
+                        const { error } = await supabase.from('profiles').delete().eq('id', userId);
+                        if (error) throw error;
+
+                        await window.logAdminAction('DELETE_USER_RECORDS', 'users', { target_id: userId, email });
+                        alert('Records deleted successfully.');
+                        fetchUsers();
+                    } catch (err) {
+                        alert('Deletion failed: ' + err.message);
+                    }
+                };
+
+                // Notification Logic
+                const notifyForm = document.getElementById('notify-user-form');
+                window.openNotifyModal = (userId, email) => {
+                    document.getElementById('notify-target-id').value = userId;
+                    document.getElementById('notify-user-form').querySelector('.modal-title')?.setContent(`Notify ${email}`);
+                    new bootstrap.Modal(document.getElementById('notifyUserModal')).show();
+                };
+
+                notifyForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const userId = document.getElementById('notify-target-id').value;
+                    const title = document.getElementById('notify-title').value;
+                    const message = document.getElementById('notify-message').value;
+                    const type = document.getElementById('notify-type').value;
+
+                    try {
+                        const { error } = await supabase.from('notifications').insert({
+                            user_id: userId,
+                            title,
+                            message,
+                            type
+                        });
+
+                        if (error) throw error;
+
+                        await window.logAdminAction('SEND_NOTIFICATION', 'notifications', { target_id: userId, title });
+                        alert('Notification sent!');
+                        bootstrap.Modal.getInstance(document.getElementById('notifyUserModal')).hide();
+                        notifyForm.reset();
+                    } catch (err) {
+                        alert('Failed to send notification: ' + err.message);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
