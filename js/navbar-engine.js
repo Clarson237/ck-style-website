@@ -8,6 +8,8 @@
         HOME: 'index.html',
         COLLECTION: 'collection.html',
         MEASURE: 'measure-me.html',
+        CONTACT: 'contact.html',
+        PREDICT: 'predict-measurements.html',
         PROFILE: 'profile.html',
         ADMIN: 'admin/index.html',
         LOGIN: 'login.html',
@@ -56,34 +58,51 @@
 
         const navHtml = `
             <div class="container">
-                <a class="navbar-brand" href="${resolvePath(PATHS.HOME)}">
+                <a class="navbar-brand fw-bold" href="${resolvePath(PATHS.HOME)}">
                     <span class="needle-thread nav-decoration"></span>
                     CK STYLE
                 </a>
                 
-                <button class="navbar-toggler tailored-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="d-flex align-items-center">
+                    <!-- Mobile Right-Side Quick Actions -->
+                    <div class="d-lg-none me-2">
+                         <button class="btn btn-link p-2 theme-toggle-btn-mobile" 
+                                 aria-label="Toggle theme" 
+                                 style="border:none; text-decoration:none; font-size: 1.2rem;">
+                            <span>${currentTheme === 'dark' ? '☀️' : '🌙'}</span>
+                        </button>
+                    </div>
+
+                    <button class="navbar-toggler tailored-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
 
                 <div class="collapse navbar-collapse" id="navContent">
                     <ul class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link tailored-nav-link ${isLinkActive(PATHS.HOME)}" href="${resolvePath(PATHS.HOME)}">Home</a>
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.HOME)}" href="${resolvePath(PATHS.HOME)}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link tailored-nav-link ${isLinkActive(PATHS.COLLECTION)}" href="${resolvePath(PATHS.COLLECTION)}">Collection</a>
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.COLLECTION)}" href="${resolvePath(PATHS.COLLECTION)}">Collection</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link tailored-nav-link ${isLinkActive(PATHS.MEASURE)}" href="${resolvePath(PATHS.MEASURE)}">Measure Me</a>
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.MEASURE)}" href="${resolvePath(PATHS.MEASURE)}">Measure Me</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.CONTACT)}" href="${resolvePath(PATHS.CONTACT)}">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.PREDICT)}" href="${resolvePath(PATHS.PREDICT)}">Predict</a>
                         </li>
                         
                         ${isAdmin ? `
                         <li class="nav-item">
-                            <a class="nav-link tailored-nav-link ${isLinkActive(PATHS.ADMIN.split('/').pop())}" href="${resolvePath(PATHS.ADMIN)}">Admin</a>
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.ADMIN.split('/').pop())}" href="${resolvePath(PATHS.ADMIN)}">Admin</a>
                         </li>` : ''}
 
-                        <!-- Theme Toggle -->
-                        <li class="nav-item ms-lg-3">
+                        <!-- Theme Toggle (Desktop) -->
+                        <li class="nav-item ms-lg-3 d-none d-lg-block">
                             <button class="btn btn-link nav-link p-2" id="theme-toggle-btn" 
                                     aria-label="Toggle light and dark mode" 
                                     aria-pressed="${currentTheme === 'dark'}"
@@ -107,7 +126,7 @@
                         </li>
 
                         <li class="nav-item dropdown ms-lg-3">
-                            <a class="nav-link dropdown-toggle tailored-nav-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle tailored-nav-link fw-bold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 ${user.email.split('@')[0]}
                             </a>
                             <ul class="dropdown-menu tailored-dropdown animate-fade-up" aria-labelledby="userDropdown">
@@ -120,10 +139,10 @@
                         </li>
                         ` : `
                         <li class="nav-item ms-lg-3">
-                            <a class="nav-link tailored-nav-link ${isLinkActive(PATHS.LOGIN)}" href="${resolvePath(PATHS.LOGIN)}">Login</a>
+                            <a class="nav-link tailored-nav-link fw-bold ${isLinkActive(PATHS.LOGIN)}" href="${resolvePath(PATHS.LOGIN)}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary ms-lg-2 mt-3 mt-lg-0 rounded-pill px-4" href="${resolvePath(PATHS.SIGNUP)}">Sign Up</a>
+                            <a class="btn btn-primary ms-lg-2 mt-3 mt-lg-0 rounded-pill px-4 fw-bold" href="${resolvePath(PATHS.SIGNUP)}">Sign Up</a>
                         </li>
                         `}
                     </ul>
@@ -153,47 +172,25 @@
 
         navContainer.innerHTML = navHtml;
 
-        // Auto-Popup Logic
-        const autoPopupUnread = async () => {
-            if (!user) return;
-            // Check session storage to avoid popping up on EVERY page load if they've already dismissed it in this session
-            if (sessionStorage.getItem('notif_popup_shown')) return;
-
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('is_read', false)
-                .order('created_at', { ascending: false })
-                .limit(1);
-
-            if (data && data.length > 0) {
-                const n = data[0];
-                window.currentPopupId = n.id;
-                document.getElementById('popup-title').innerText = n.title;
-                document.getElementById('popup-message').innerText = n.message;
-
-                const modal = new bootstrap.Modal(document.getElementById('globalNotifModal'));
-                modal.show();
-                sessionStorage.setItem('notif_popup_shown', 'true');
-            }
-        };
-
-        // Initialize Logic
-        const toggleBtn = document.getElementById('theme-toggle-btn');
-        autoPopupUnread(); // Check for unread alerts immediately
-        if (toggleBtn) {
-            toggleBtn.onclick = async () => {
+        // Theme Toggle Logic
+        const applyThemeToggle = (btn) => {
+            btn.onclick = async () => {
                 const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                 window.CK_THEME.apply(nextTheme);
-                document.getElementById('theme-icon').innerText = nextTheme === 'dark' ? '☀️' : '🌙';
-                toggleBtn.setAttribute('aria-pressed', nextTheme === 'dark');
+                btn.querySelector('span').innerText = nextTheme === 'dark' ? '☀️' : '🌙';
+                btn.setAttribute('aria-pressed', nextTheme === 'dark');
 
                 if (user) {
                     await supabase.from('profiles').update({ theme: nextTheme }).eq('id', user.id);
                 }
             };
-        }
+        };
+
+        const desktopToggle = document.getElementById('theme-toggle-btn');
+        if (desktopToggle) applyThemeToggle(desktopToggle);
+
+        const mobileToggle = document.querySelector('.theme-toggle-btn-mobile');
+        if (mobileToggle) applyThemeToggle(mobileToggle);
 
         // Notification Fetching & Management
         if (user) {
@@ -284,16 +281,8 @@
                 }
             };
         }
-
-        // Listen for global theme changes
-        window.addEventListener('theme-changed', (e) => {
-            const theme = e.detail;
-            const icon = document.getElementById('theme-icon');
-            if (icon) icon.innerText = theme === 'dark' ? '☀️' : '🌙';
-            const btn = document.getElementById('theme-toggle-btn');
-            if (btn) btn.setAttribute('aria-pressed', theme === 'dark');
-        });
     };
+
 
     // Re-run on auth state change
     const initNavbar = () => {

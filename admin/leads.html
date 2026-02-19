@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CK STYLE | WhatsApp Leads</title>
+    <!-- Core Security & Theme -->
+    <script src="../js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/navbar-engine.js"></script>
+    <script src="js/admin-core.js"></script>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        :root {
+            --admin-card-bg: var(--bg-card, rgba(255, 255, 255, 0.03));
+            --admin-accent: #c5a059;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-main, #0a0a0a);
+            color: var(--text-main, #ffffff);
+        }
+
+        .sidebar-link {
+            color: #888;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(197, 160, 89, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .premium-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 1.25rem;
+            border: none;
+        }
+
+        .premium-table td {
+            padding: 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ccc;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+        }
+
+        .bg-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .bg-contacted {
+            background: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+
+        .bg-converted {
+            background: rgba(25, 135, 84, 0.1);
+            color: #198754;
+            border: 1px solid rgba(25, 135, 84, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-main">
+    <nav id="main-nav"></nav>
+
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="glass p-4 rounded-4 sticky-top" style="top: 100px;">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-4 ls-1">System Management</h6>
+                    <nav class="nav flex-column gap-2">
+                        <a class="sidebar-link" href="index.html">Dashboard Overview</a>
+                        <a class="sidebar-link" href="collections.html">Manage Collections</a>
+                        <a class="sidebar-link active" href="leads.html">WhatsApp Leads</a>
+                        <a class="sidebar-link" href="measurements.html">Measurement Database</a>
+                        <a class="sidebar-link" href="users.html">User Accounts</a>
+                        <a class="sidebar-link" href="audit.html">System Audit</a>
+                        <hr class="border-secondary my-3">
+                        <a class="sidebar-link text-danger" href="#"
+                            onclick="(async () => { await supabaseClient.auth.signOut(); window.location.href='../login.html'; })()">Sign
+                            Out</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <div class="animate-fade-up">
+                    <div class="d-flex justify-content-between align-items-end mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-1">WhatsApp Leads</h2>
+                            <p class="text-muted">Track and manage customer inquiries clicked via WhatsApp.</p>
+                        </div>
+                    </div>
+
+                    <div class="premium-table">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leads-list">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <div class="spinner-border text-gold spinner-border-sm" role="status"></div>
+                                            <span class="ms-2 text-muted">Fetching leads...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const whenSupabaseReady = (fn) => {
+                if (window.supabaseClient) fn();
+                else window.addEventListener('supabase-ready', fn, { once: true });
+            };
+
+            whenSupabaseReady(async () => {
+                const supabase = window.supabaseClient;
+                const listBody = document.getElementById('leads-list');
+
+                async function fetchLeads() {
+                    try {
+                        const { data: leads, error } = await supabase
+                            .from('whatsapp_leads')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+
+                        if (error) throw error;
+
+                        if (!leads || leads.length === 0) {
+                            listBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No leads captured yet.</td></tr>';
+                            return;
+                        }
+
+                        listBody.innerHTML = leads.map(l => `
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-white">${l.product_title}</div>
+                                    <a href="${l.product_url}" target="_blank" class="small text-gold text-decoration-none">View Product Context</a>
+                                </td>
+                                <td>${l.product_price}</td>
+                                <td class="text-muted small">${new Date(l.created_at).toLocaleString()}</td>
+                                <td>
+                                    <span class="status-badge bg-${l.status || 'pending'}">
+                                        ${l.status || 'pending'}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-gold dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Manage
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <li><a class="dropdown-item small" href="#" onclick="updateLeadStatus('${l.id}', 'pending')">Set Pending</a></li>
+                                            <li><a class="dropdown-item small" href="#" onclick="updateLeadStatus('${l.id}', 'contacted')">Set Contacted</a></li>
+                                            <li><a class="dropdown-item small" href="#" onclick="updateLeadStatus('${l.id}', 'converted')">Set Converted</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item small text-danger" href="#" onclick="deleteLead('${l.id}')">Delete Lead</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('');
+
+                    } catch (err) {
+                        console.error('Error loading leads:', err);
+                        listBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+                    }
+                }
+
+                window.updateLeadStatus = async (id, status) => {
+                    const { error } = await supabase
+                        .from('whatsapp_leads')
+                        .update({ status: status })
+                        .eq('id', id);
+
+                    if (error) {
+                        alert('Update failed: ' + error.message);
+                    } else {
+                        await window.logAdminAction('UPDATE_LEAD', 'whatsapp_leads', { id, status });
+                        fetchLeads();
+                    }
+                };
+
+                window.deleteLead = async (id) => {
+                    if (!confirm('Permanent destruction of this lead record?')) return;
+                    const { error } = await supabase
+                        .from('whatsapp_leads')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) {
+                        alert('Deletion failed: ' + error.message);
+                    } else {
+                        await window.logAdminAction('DELETE_LEAD', 'whatsapp_leads', { id });
+                        fetchLeads();
+                    }
+                };
+
+                fetchLeads();
+            });
+        });
+    </script>
+</body>
+
+</html>

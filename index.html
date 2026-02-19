@@ -3,7 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="color-scheme" content="light dark">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <title>CK STYLE | Premium Custom Fashion</title>
 
     <!-- Bootstrap CSS -->
@@ -13,6 +19,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/animations.css">
 
     <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -34,15 +41,18 @@
             overflow-x: hidden;
         }
 
-        /* Hero Section */
+        /* Hero Section — Split Layout */
         .hero-section {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%);
+            background: linear-gradient(135deg, #1a150d 0%, #2a2115 40%, #3d3220 100%);
+        }
+
+        [data-theme="light"] .hero-section {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 40%, #ddd0b8 100%);
         }
 
         .hero-bg-animation {
@@ -52,7 +62,7 @@
             top: 0;
             left: 0;
             z-index: 0;
-            opacity: 0.15;
+            opacity: 0.2;
         }
 
         .hero-bg-animation::before,
@@ -60,15 +70,15 @@
             content: '';
             position: absolute;
             border-radius: 50%;
-            background: var(--accent-color);
-            filter: blur(100px);
+            filter: blur(120px);
         }
 
         .hero-bg-animation::before {
             width: 500px;
             height: 500px;
             top: -200px;
-            right: -200px;
+            right: 20%;
+            background: #c5a059;
             animation: float 20s ease-in-out infinite;
         }
 
@@ -76,7 +86,8 @@
             width: 400px;
             height: 400px;
             bottom: -150px;
-            left: -150px;
+            left: 10%;
+            background: #8B7340;
             animation: float 15s ease-in-out infinite reverse;
         }
 
@@ -84,44 +95,224 @@
 
             0%,
             100% {
-                transform: translate(0, 0) scale(1);
+                transform: translate(0, 0);
             }
 
             50% {
-                transform: translate(50px, 50px) scale(1.1);
+                transform: translate(30px, 30px);
+            }
+        }
+
+        .hero-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            min-height: 100vh;
+            padding: 120px 0 80px;
+        }
+
+        @media (max-width: 991px) {
+            .hero-split {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+                padding: 100px 0 60px;
             }
         }
 
         .hero-content {
             position: relative;
-            z-index: 1;
-            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-brand-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(197, 160, 89, 0.15);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #c5a059;
+            margin-bottom: 2rem;
+        }
+
+        .hero-brand-pill .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #c5a059;
+            animation: pulse-gold 2s ease-in-out infinite;
         }
 
         .hero-title {
-            font-size: clamp(3rem, 10vw, 6rem);
+            font-size: clamp(2.8rem, 6vw, 5rem);
             font-weight: 700;
-            letter-spacing: -3px;
+            letter-spacing: -2px;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-color) 100%);
+            line-height: 1.05;
+            color: #f5f0e8;
+        }
+
+        .hero-title .accent {
+            background: linear-gradient(135deg, #c5a059, #f0d060);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        [data-theme="light"] .hero-title {
+            color: #1a150d;
+        }
+
         .hero-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            color: rgba(245, 240, 232, 0.6);
+            max-width: 480px;
+            margin-bottom: 2.5rem;
             line-height: 1.8;
+        }
+
+        [data-theme="light"] .hero-subtitle {
+            color: rgba(26, 21, 13, 0.6);
+        }
+
+        @media (max-width: 991px) {
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
 
         .hero-btns {
             display: flex;
             gap: 1rem;
-            justify-content: center;
             flex-wrap: wrap;
+        }
+
+        @media (max-width: 991px) {
+            .hero-btns {
+                justify-content: center;
+            }
+        }
+
+        /* Hero Image Panel */
+        .hero-image-panel {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-img-frame {
+            position: relative;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .hero-img-frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            display: block;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            animation: heroImgReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes heroImgReveal {
+            from {
+                clip-path: inset(100% 0 0 0);
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                clip-path: inset(0 0 0 0);
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-img-accent {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 16px;
+            left: 16px;
+            border: 2px solid rgba(197, 160, 89, 0.3);
+            border-radius: 24px;
+            z-index: -1;
+            animation: accentFrame 1.5s 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes accentFrame {
+            from {
+                opacity: 0;
+                transform: translate(8px, 8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+        }
+
+        .hero-img-badge {
+            position: absolute;
+            bottom: -16px;
+            left: -16px;
+            background: linear-gradient(135deg, #c5a059, #f0d060);
+            color: #1a150d;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35);
+            animation: badgeFloat 1.8s 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes badgeFloat {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 991px) {
+
+            /* Hero image becomes full background on mobile */
+            .hero-section {
+                background: linear-gradient(to bottom,
+                        rgba(26, 21, 13, 0.75) 0%,
+                        rgba(26, 21, 13, 0.85) 50%,
+                        rgba(26, 21, 13, 0.95) 100%), url('assets/hero-model.jpg') center/cover no-repeat;
+            }
+
+            [data-theme="light"] .hero-section {
+                background: linear-gradient(to bottom,
+                        rgba(245, 240, 232, 0.7) 0%,
+                        rgba(245, 240, 232, 0.85) 50%,
+                        rgba(245, 240, 232, 0.95) 100%), url('assets/hero-model.jpg') center/cover no-repeat;
+            }
+
+            .hero-image-panel {
+                display: none;
+            }
+
+            .hero-img-frame,
+            .hero-img-accent,
+            .hero-img-badge {
+                display: none;
+            }
         }
 
         .scroll-indicator {
@@ -129,9 +320,16 @@
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            color: rgba(245, 240, 232, 0.4);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
             animation: bounce 2s infinite;
+            z-index: 2;
+        }
+
+        [data-theme="light"] .scroll-indicator {
+            color: rgba(26, 21, 13, 0.4);
         }
 
         @keyframes bounce {
@@ -157,7 +355,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 30px;
             overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .showcase-card:hover {
@@ -181,7 +379,7 @@
         }
 
         .showcase-card:hover .showcase-img img {
-            transform: scale(1.1);
+            transform: translateY(-5px);
         }
 
         .showcase-badge {
@@ -290,13 +488,14 @@
             border-radius: 20px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
-            transition: all 0.4s ease;
+            transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
             height: 100%;
         }
 
-        .why-card:hover {
-            transform: translateY(-5px);
+        .stat-card:hover {
+            transform: translateY(-6px);
             border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .why-icon {
@@ -337,7 +536,7 @@
             border-radius: 25px;
             padding: 40px;
             height: auto;
-            transition: all 0.4s ease;
+            transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
         }
 
@@ -435,232 +634,462 @@
 </head>
 
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar" id="scrollProgress"></div>
+
     <nav id="main-nav"></nav>
+    <div class="page-content-wrapper page-enter">
 
-    <!-- Hero Section -->
-    <header class="hero-section">
-        <div class="hero-bg-animation"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title" data-gsap="fadeUp">Redefining Elegance</h1>
-                <p class="hero-subtitle" data-gsap="fadeUp" data-delay="0.2">
-                    Experience the pinnacle of custom-made fashion. Tailored to your unique style, crafted with
-                    precision.
-                </p>
-                <div class="hero-btns" data-gsap="fadeUp" data-delay="0.4">
-                    <a href="collection.html" class="btn btn-primary btn-lg px-5">Explore Collection</a>
-                    <a href="measure-me.html" class="btn btn-outline-gold btn-lg px-5">Get Measured</a>
-                </div>
+        <!-- Hero Section — Split Layout -->
+        <header class="hero-section">
+            <div class="hero-bg-animation"></div>
+            <!-- Floating Parallax Shapes -->
+            <div class="floating-shapes">
+                <div class="floating-shape shape-1"></div>
+                <div class="floating-shape shape-2"></div>
+                <div class="floating-shape shape-3"></div>
             </div>
-        </div>
-        <div class="scroll-indicator">Scroll to Discover</div>
-    </header>
-
-    <!-- Featured Product Showcase -->
-    <section class="product-showcase" id="featured-product">
-        <div class="container">
-            <h2 class="section-title" data-gsap="fadeUp">Featured Masterpiece</h2>
-            <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
-                Handpicked excellence from our premium collection
-            </p>
-            <div id="product-container" class="text-center">
-                <div class="spinner-border text-gold" role="status"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Measurement Service -->
-    <section class="measurement-section">
-        <div class="container">
-            <div class="measurement-card" data-gsap="scale">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 measurement-content">
-                        <h2 class="measurement-title">Professional Measurements, Perfectly Organized</h2>
-                        <p class="measurement-subtitle">Get your measurements taken and stored securely - absolutely
-                            FREE</p>
-                        <ul class="feature-list">
-                            <li>Expert guidance through every measurement</li>
-                            <li>Secure cloud storage for easy access</li>
-                            <li>Multiple profiles for different occasions</li>
-                            <li>Download as PDF, CSV, or Image anytime</li>
-                        </ul>
-                        <a href="measure-me.html" class="btn btn-dark btn-lg px-5">Start Measuring - FREE</a>
-                    </div>
-                    <div class="col-lg-5 text-center d-none d-lg-block">
-                        <div style="font-size: 10rem; opacity: 0.3;">📐</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Why CK STYLE -->
-    <section class="why-section">
-        <div class="container">
-            <h2 class="section-title" data-gsap="fadeUp">Why CK STYLE?</h2>
-            <div class="row g-4">
-                <div class="col-md-4" data-gsap="fadeUp" data-delay="0">
-                    <div class="why-card text-center">
-                        <span class="why-icon">✂️</span>
-                        <h3 class="h4 mb-3">Custom Fit</h3>
-                        <p class="text-muted">Every piece is handcrafted to your exact measurements for a perfect fit,
-                            every time.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-gsap="fadeUp" data-delay="0.1">
-                    <div class="why-card text-center">
-                        <span class="why-icon">👔</span>
-                        <h3 class="h4 mb-3">Premium Fabrics</h3>
-                        <p class="text-muted">We source only the finest materials from around the globe to ensure
-                            lasting quality.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-gsap="fadeUp" data-delay="0.2">
-                    <div class="why-card text-center">
-                        <span class="why-icon">⭐</span>
-                        <h3 class="h4 mb-3">Expert Design</h3>
-                        <p class="text-muted">Our designers blend traditional craftsmanship with modern fashion trends.
+            <div class="container">
+                <div class="hero-split">
+                    <!-- Left: Text Content -->
+                    <div class="hero-content">
+                        <div class="hero-brand-pill" data-gsap="fadeUp">
+                            <span class="pulse-dot"></span>
+                            PREMIUM BESPOKE FASHION
+                        </div>
+                        <h1 class="hero-title" data-gsap="fadeUp" data-delay="0.15">
+                            Redefining<br><span class="accent">Elegance</span>
+                        </h1>
+                        <p class="hero-subtitle" data-gsap="fadeUp" data-delay="0.3">
+                            Experience the pinnacle of custom-made fashion. Every piece is tailored to your unique
+                            style,
+                            crafted with precision and passion.
                         </p>
+                        <div class="hero-btns" data-gsap="fadeUp" data-delay="0.45">
+                            <a href="collection.html" class="btn btn-primary btn-lg px-5">Explore Collection</a>
+                            <a href="measure-me.html" class="btn btn-outline-gold btn-lg px-5">Get Measured</a>
+                        </div>
+                    </div>
+                    <!-- Right: Hero Image -->
+                    <div class="hero-image-panel">
+                        <div class="hero-img-frame">
+                            <img src="assets/hero-model.jpg" alt="CK STYLE — Premium Bespoke Fashion" loading="eager">
+                            <div class="hero-img-accent"></div>
+                            <div class="hero-img-badge">✂️ Hand-Crafted Excellence</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+            <div class="scroll-indicator">↓ Scroll to Discover</div>
+        </header>
 
-    <!-- Client Testimonials -->
-    <section class="testimonials-section">
-        <div class="container">
-            <h2 class="section-title" data-gsap="fadeUp">What Our Clients Say</h2>
-            <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
-                Real experiences from our valued customers
-            </p>
-
-            <div class="swiper testimonials-swiper">
-                <div class="swiper-wrapper">
-                    <!-- Testimonial 1 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "CK STYLE transformed my wardrobe! The custom fit is absolutely perfect, and the quality
-                                is unmatched. I've received countless compliments on my suits. Highly recommend!"
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">JD</div>
-                                <div class="author-info">
-                                    <h4>John Doe</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 2 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "The measurement service made everything so easy! My wedding dress fit like a dream. The
-                                team was professional, attentive, and the final product exceeded all expectations."
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">SM</div>
-                                <div class="author-info">
-                                    <h4>Sarah Mitchell</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 3 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "Outstanding craftsmanship and attention to detail. I ordered a traditional outfit and
-                                the fabric quality is exceptional. CK STYLE is my go-to for all special occasions!"
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">MK</div>
-                                <div class="author-info">
-                                    <h4>Michael Kamga</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 4 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "I was amazed by how simple the measurement process was! The staff guided me perfectly,
-                                and my suit arrived exactly as promised. Perfect fit, premium quality!"
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">EN</div>
-                                <div class="author-info">
-                                    <h4>Emmanuel Nkeng</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 5 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "Best decision ever! The team is incredibly talented. My gown was stunning and fit
-                                perfectly. I felt like royalty. Thank you CK STYLE for making my day special!"
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">GF</div>
-                                <div class="author-info">
-                                    <h4>Grace Fon</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Testimonial 6 -->
-                    <div class="swiper-slide">
-                        <div class="testimonial-card">
-                            <div class="quote-icon">"</div>
-                            <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
-                            <p class="testimonial-text">
-                                "From consultation to delivery, everything was seamless. The quality, the fit, the style
-                                - all perfect! CK STYLE has earned a loyal customer for life."
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">PT</div>
-                                <div class="author-info">
-                                    <h4>Peter Tabe</h4>
+        <!-- Featured Product Showcase -->
+        <section class="product-showcase reveal-on-scroll" id="featured-product">
+            <div class="container">
+                <h2 class="section-title" data-gsap="fadeUp">Featured Masterpiece</h2>
+                <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
+                    Handpicked excellence from our premium collection
+                </p>
+                <div id="product-container" class="text-center">
+                    <!-- Skeleton Shimmer Loading -->
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6 col-md-8">
+                            <div class="skeleton-shimmer" style="border-radius:30px;overflow:hidden">
+                                <div class="skeleton-card-img"></div>
+                                <div style="padding:24px">
+                                    <div class="skeleton-line w-60 skeleton-shimmer"></div>
+                                    <div class="skeleton-line w-80 skeleton-shimmer"></div>
+                                    <div class="skeleton-line w-40 skeleton-shimmer"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Pagination -->
-                <div class="swiper-pagination"></div>
-
-                <!-- Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="glass py-4 mt-5">
-        <div class="container text-center">
-            <p class="text-muted mb-0">&copy; 2026 CK STYLE. All Rights Reserved.</p>
-        </div>
-    </footer>
+        <!-- Animated Stats Section -->
+        <section class="stats-section reveal-on-scroll">
+            <div class="container">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card spring-card">
+                            <div class="stat-number" data-count="500">0</div>
+                            <div class="stat-suffix">+</div>
+                            <div class="stat-label">Masterpieces</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card spring-card">
+                            <div class="stat-number" data-count="10">0</div>
+                            <div class="stat-suffix">+</div>
+                            <div class="stat-label">Years</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card spring-card">
+                            <div class="stat-number" data-count="1000">0</div>
+                            <div class="stat-suffix">+</div>
+                            <div class="stat-label">Happy Clients</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card spring-card">
+                            <div class="stat-number" data-count="50">0</div>
+                            <div class="stat-suffix">+</div>
+                            <div class="stat-label">Fabric Types</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Measurement Service -->
+        <section class="measurement-section reveal-on-scroll">
+            <div class="container">
+                <div class="measurement-card spring-card" data-gsap="scale">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7 measurement-content">
+                            <h2 class="measurement-title">Professional Measurements, Perfectly Organized</h2>
+                            <p class="measurement-subtitle">Get your measurements taken and stored securely - absolutely
+                                FREE</p>
+                            <ul class="feature-list">
+                                <li>Expert guidance through every measurement</li>
+                                <li>Secure cloud storage for easy access</li>
+                                <li>Multiple profiles for different occasions</li>
+                                <li>Download as PDF, CSV, or Image anytime</li>
+                            </ul>
+                            <a href="measure-me.html" class="btn btn-dark btn-lg px-5">Start Measuring - FREE</a>
+                        </div>
+                        <div class="col-lg-5 text-center d-none d-lg-block">
+                            <div style="font-size: 10rem; opacity: 0.3;">📐</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why CK STYLE -->
+        <section class="why-section reveal-on-scroll">
+            <div class="container">
+                <h2 class="section-title" data-gsap="fadeUp">Why CK STYLE?</h2>
+                <div class="row g-4">
+                    <div class="col-md-4" data-gsap="fadeUp" data-delay="0">
+                        <div class="why-card text-center spring-card">
+                            <span class="why-icon">✂️</span>
+                            <h3 class="h4 mb-3">Custom Fit</h3>
+                            <p class="text-muted">Every piece is handcrafted to your exact measurements for a perfect
+                                fit,
+                                every time.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4" data-gsap="fadeUp" data-delay="0.1">
+                        <div class="why-card text-center spring-card">
+                            <span class="why-icon">👔</span>
+                            <h3 class="h4 mb-3">Premium Fabrics</h3>
+                            <p class="text-muted">We source only the finest materials from around the globe to ensure
+                                lasting quality.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4" data-gsap="fadeUp" data-delay="0.2">
+                        <div class="why-card text-center spring-card">
+                            <span class="why-icon">⭐</span>
+                            <h3 class="h4 mb-3">Expert Design</h3>
+                            <p class="text-muted">Our designers blend traditional craftsmanship with modern fashion
+                                trends.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Testimonials -->
+        <section class="testimonials-section reveal-on-scroll">
+            <div class="container">
+                <h2 class="section-title" data-gsap="fadeUp">What Our Clients Say</h2>
+                <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
+                    Real experiences from our valued customers
+                </p>
+
+                <div class="swiper testimonials-swiper">
+                    <div class="swiper-wrapper">
+                        <!-- Testimonial 1 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "CK STYLE transformed my wardrobe! The custom fit is absolutely perfect, and the
+                                    quality
+                                    is unmatched. I've received countless compliments on my suits. Highly recommend!"
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">JD</div>
+                                    <div class="author-info">
+                                        <h4>John Doe</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 2 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "The measurement service made everything so easy! My wedding dress fit like a dream.
+                                    The
+                                    team was professional, attentive, and the final product exceeded all expectations."
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">SM</div>
+                                    <div class="author-info">
+                                        <h4>Sarah Mitchell</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 3 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "Outstanding craftsmanship and attention to detail. I ordered a traditional outfit
+                                    and
+                                    the fabric quality is exceptional. CK STYLE is my go-to for all special occasions!"
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">MK</div>
+                                    <div class="author-info">
+                                        <h4>Michael Kamga</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 4 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "I was amazed by how simple the measurement process was! The staff guided me
+                                    perfectly,
+                                    and my suit arrived exactly as promised. Perfect fit, premium quality!"
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">EN</div>
+                                    <div class="author-info">
+                                        <h4>Emmanuel Nkeng</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 5 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "Best decision ever! The team is incredibly talented. My gown was stunning and fit
+                                    perfectly. I felt like royalty. Thank you CK STYLE for making my day special!"
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">GF</div>
+                                    <div class="author-info">
+                                        <h4>Grace Fon</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 6 -->
+                        <div class="swiper-slide">
+                            <div class="testimonial-card">
+                                <div class="quote-icon">"</div>
+                                <span class="testimonial-stars">⭐⭐⭐⭐⭐</span>
+                                <p class="testimonial-text">
+                                    "From consultation to delivery, everything was seamless. The quality, the fit, the
+                                    style
+                                    - all perfect! CK STYLE has earned a loyal customer for life."
+                                </p>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">PT</div>
+                                    <div class="author-info">
+                                        <h4>Peter Tabe</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="swiper-pagination"></div>
+
+                    <!-- Navigation -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <!-- Smart Measurement Promo Section -->
+        <section class="smart-measure-promo reveal-on-scroll" style="padding: 100px 0; background: var(--bg-card);">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6 order-lg-2" data-gsap="fadeUp">
+                        <div class="promo-image-wrapper position-relative text-center">
+                            <div class="glass-orb position-absolute top-50 start-50 translate-middle"></div>
+                            <div class="promo-card-stack">
+                                <div class="promo-card glass p-4 mb-4 transform-hover text-start"
+                                    style="border-radius: 20px;">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-circle me-3"><i class="bi bi-magic"></i></div>
+                                        <h5 class="mb-0 fw-bold">AI Precision</h5>
+                                    </div>
+                                    <p class="small text-muted mb-0">99.8% accuracy in predicting body measurements
+                                        using our advanced neural engine.</p>
+                                </div>
+                                <div class="promo-card glass p-4 transform-hover text-start"
+                                    style="border-radius: 20px; margin-left: 30px;">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-circle me-3"><i class="bi bi-lightning-charge"></i></div>
+                                        <h5 class="mb-0 fw-bold">Instant Results</h5>
+                                    </div>
+                                    <p class="small text-muted mb-0">Get your tailorship-ready measurements in under 30
+                                        seconds with minimal inputs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1" data-gsap="fadeUp" data-delay="0.2">
+                        <h5 class="text-gold text-uppercase letter-spacing-2 mb-3">Future of Fashion</h5>
+                        <h2 class="display-4 fw-bold mb-4">Smart Measurement <span class="text-gold">AI</span></h2>
+                        <p class="lead text-muted mb-4">
+                            Experience the ultimate convenience of bespoke tailoring. Our Smart Measurement system
+                            predicts your exact fit, ensuring every piece you order is a masterpiece of comfort.
+                        </p>
+                        <ul class="list-unstyled mb-5">
+                            <li class="mb-3 d-flex align-items-center text-muted">
+                                <i class="bi bi-check-circle-fill text-gold me-3"></i> No tape measure required
+                            </li>
+                            <li class="mb-3 d-flex align-items-center text-muted">
+                                <i class="bi bi-check-circle-fill text-gold me-3"></i> Personalized fitting profile
+                            </li>
+                            <li class="mb-3 d-flex align-items-center text-muted">
+                                <i class="bi bi-check-circle-fill text-gold me-3"></i> 100% Secure & Confidential
+                            </li>
+                        </ul>
+                        <a href="predict-measurements.html"
+                            class="btn btn-gold btn-lg px-5 rounded-pill shadow-gold">Predict My Measurement</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            .promo-image-wrapper {
+                min-height: 400px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .glass-orb {
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(circle, var(--accent-color), transparent 70%);
+                opacity: 0.15;
+                filter: blur(50px);
+                animation: floatOrb 10s infinite ease-in-out;
+            }
+
+            .icon-circle {
+                width: 45px;
+                height: 45px;
+                background: rgba(197, 160, 89, 0.1);
+                border: 1px solid var(--accent-color);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--accent-color);
+                font-size: 1.2rem;
+            }
+
+            @keyframes floatOrb {
+
+                0%,
+                100% {
+                    transform: translate(-50%, -50%) scale(1);
+                }
+
+                50% {
+                    transform: translate(-50%, -60%) scale(1.1);
+                }
+            }
+
+            .shadow-gold {
+                box-shadow: 0 10px 30px rgba(197, 160, 89, 0.3);
+            }
+
+            .transform-hover {
+                transition: transform 0.4s ease, border-color 0.4s ease;
+            }
+
+            .transform-hover:hover {
+                transform: translateY(-10px) translateX(2px);
+                border-color: var(--accent-color) !important;
+            }
+        </style>
+
+        <!-- About The Founder -->
+        <section class="about-section reveal-on-scroll" style="padding: 100px 0;">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6" data-gsap="fadeUp">
+                        <div class="position-relative">
+                            <img src="assets/hero-model.jpg" alt="Nchofuong Clarson"
+                                class="img-fluid rounded-4 shadow-lg"
+                                style="filter: grayscale(20%); transition: all 0.5s ease;">
+                            <div
+                                class="position-absolute bottom-0 start-0 bg-glass p-3 m-4 rounded-3 text-white backdrop-blur">
+                                <h5 class="mb-0 fw-bold">Nchofuong Clarson</h5>
+                                <small class="text-gold">Founder & Lead Designer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-gsap="fadeUp" data-delay="0.2">
+                        <h5 class="text-gold text-uppercase letter-spacing-2 mb-3">The Visionary</h5>
+                        <h2 class="display-5 fw-bold mb-4">Crafting Legacy Through Style</h2>
+                        <p class="lead text-muted mb-4">
+                            "Fashion is not just about what you wear, but how you feel. My mission is to empower every
+                            individual with the confidence that comes from a perfectly tailored masterpiece."
+                        </p>
+                        <p class="text-muted mb-5">
+                            With a passion for detail and a commitment to excellence, Nchofuong Clarson has established
+                            CK STYLE as a beacon of premium bespoke fashion.
+                        </p>
+                        <a href="contact.html" class="btn btn-outline-gold btn-lg px-5 rounded-pill">Get in Touch</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="glass py-4 mt-5">
+            <div class="container text-center">
+                <p class="text-muted mb-0">&copy; 2026 CK STYLE. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -787,6 +1216,63 @@
             } else {
                 initFlipAnimations();
             }
+        })();
+    </script>
+
+    <!-- Scroll Progress Bar + Scroll Reveal + Stat Counter Scripts -->
+    <script>
+        (function () {
+            // ─── Scroll Progress Bar ───
+            const progressBar = document.getElementById('scrollProgress');
+            if (progressBar) {
+                window.addEventListener('scroll', () => {
+                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                    progressBar.style.width = progress + '%';
+                }, { passive: true });
+            }
+
+            // ─── Scroll Reveal (Intersection Observer) ───
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // ─── Animated Counter ───
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.getAttribute('data-count'), 10);
+                        if (isNaN(target)) return;
+                        let current = 0;
+                        const duration = 2000;
+                        const step = Math.max(1, Math.ceil(target / (duration / 16)));
+                        const timer = setInterval(() => {
+                            current += step;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            el.textContent = new Intl.NumberFormat().format(current);
+                        }, 16);
+                        counterObserver.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            document.querySelectorAll('.stat-number[data-count]').forEach(el => {
+                counterObserver.observe(el);
+            });
         })();
     </script>
 </body>

@@ -8,26 +8,30 @@
 }
 
 .progress-track {
-    background: var(--glass-border);
-    height: 4px;
-    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    height: 6px;
+    border-radius: 10px;
     position: relative;
     overflow: hidden;
+    border: 1px solid var(--glass-border);
 }
 
 .progress-fill {
-    background: var(--accent-color);
+    background: linear-gradient(90deg, var(--accent-color), #d4b770);
     height: 100%;
     width: 0%;
-    transition: width 0.5s ease;
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
 }
 
 .step-indicator {
     text-align: center;
-    margin-top: 1rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
+    margin-top: 1.2rem;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* Wizard Container */

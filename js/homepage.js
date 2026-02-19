@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Animate elements on load
     gsap.from('[data-gsap="fadeUp"]', {
-        y: 60,
+        y: 20,
         opacity: 0,
         duration: 1,
         stagger: (i, target) => {
@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Scroll-triggered animations
     gsap.utils.toArray('[data-gsap="scale"]').forEach(elem => {
         gsap.from(elem, {
-            scale: 0.9,
+            y: 20,
             opacity: 0,
             duration: 1,
             scrollTrigger: {
                 trigger: elem,
-                start: "top 80%",
+                start: "top 85%",
                 toggleActions: "play none none reverse"
             }
         });
@@ -115,7 +115,7 @@ async function loadFeaturedProduct() {
 
         // Animate product card entrance
         gsap.from('.showcase-card', {
-            y: 50,
+            y: 20,
             opacity: 0,
             duration: 1,
             ease: "power3.out"

@@ -12,7 +12,7 @@
     --bg-main-rgb: 10, 10, 10;
     --bg-card: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: background 0.3s ease, color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
     --btn-text: #0d0d0d;
     /* Text on Gold buttons */
 }
@@ -32,11 +32,6 @@
 
 body {
     background-color: var(--bg-main);
-    background-image:
-        repeating-radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0px, transparent 2px, rgba(255, 255, 255, 0.03) 4px, transparent 8px),
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px),
-        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 4px);
-    background-size: 12px 12px, 4px 4px, 4px 4px;
     color: var(--text-main);
     font-family: 'Outfit', sans-serif;
     margin: 0;
@@ -44,10 +39,7 @@ body {
 }
 
 [data-theme="light"] body {
-    background-image:
-        repeating-radial-gradient(circle at center, rgba(0, 0, 0, 0.03) 0px, transparent 2px, rgba(0, 0, 0, 0.03) 4px, transparent 8px),
-        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px),
-        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px);
+    background-color: var(--bg-main);
 }
 
 /* Glassmorphism Classes */
@@ -194,19 +186,148 @@ body {
     padding: clamp(60px, 10vw, 100px) 0;
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+/* Professional Utilities */
+:root {
+    --motion-dur-short: 180ms;
+    --motion-dur-medium: 400ms;
+    --motion-dur-long: 900ms;
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-fluid: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.text-gold {
+    color: var(--accent-color) !important;
+}
+
+.bg-gold {
+    background-color: var(--accent-color) !important;
+}
+
+.border-gold {
+    border-color: var(--accent-color) !important;
+}
+
+.btn-gold {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    border: 1px solid var(--accent-color);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 999px;
+    transition: transform var(--motion-dur-medium) var(--ease-smooth), box-shadow var(--motion-dur-medium) var(--ease-smooth);
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(212, 175, 55, 0.25);
+}
+
+.btn-gold:active {
+    transform: translateY(0);
+}
+
+.glass-hover {
+    transition: box-shadow var(--motion-dur-medium) var(--ease-smooth), transform var(--motion-dur-medium) var(--ease-smooth);
+}
+
+.glass-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px rgba(var(--bg-main-rgb), 0.35);
+}
+
+/* Reduced motion safety */
+@media (prefers-reduced-motion: reduce) {
+
+    .btn-gold,
+    .btn-primary,
+    .btn-outline-gold,
+    .glass-hover,
+    .tilt-hover,
+    .animate-fade-up,
+    .animate-fade-scale {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
     }
 }
 
-.animate-fade-up {
-    animation: fadeInUp 0.8s ease-out forwards;
+/* Card polish */
+.card-premium {
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    background: var(--bg-main);
+    transition: border-color var(--motion-dur-medium) var(--ease-smooth), box-shadow var(--motion-dur-medium) var(--ease-smooth), transform var(--motion-dur-medium) var(--ease-smooth);
+}
+
+.card-premium:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-6px);
+    box-shadow: 0 28px 56px rgba(0, 0, 0, 0.35);
+}
+
+/* Navbar premium polish (non-breaking) */
+.tailored-navbar .navbar-brand {
+    letter-spacing: 2px;
+}
+
+.tailored-navbar .navbar-toggler {
+    transition: transform var(--motion-dur-short) var(--ease-smooth);
+}
+
+.tailored-navbar .navbar-toggler:active {
+    transform: translateY(2px);
+}
+
+/* Testimonial avatar subtle glow */
+.author-avatar {
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
+}
+
+/* Swiper controls polish */
+.swiper-button-next,
+.swiper-button-prev {
+    transition: transform var(--motion-dur-short) var(--ease-smooth), box-shadow var(--motion-dur-short) var(--ease-smooth);
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Auto Slider inside card image */
+.auto-slider {
+    position: absolute;
+    inset: 0;
+    overflow: hidden
+}
+
+.auto-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+/* Buy Now overlay in gallery */
+.buy-now-overlay {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 10010;
+    padding: 8px 14px;
+    font-size: .85rem;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: var(--transition)
+}
+
+.buy-now-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0)
 }

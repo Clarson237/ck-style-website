@@ -1,7 +1,7 @@
 /* CK STYLE - Utility Classes for Navigation and Animations */
 
 .transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.3s ease, color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .hover-gold:hover {
