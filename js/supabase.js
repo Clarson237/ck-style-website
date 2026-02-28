@@ -11,5 +11,4 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_2OO4Xgabkjh1Gr0h82_RSw_PwzNvs6P';
     window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window.dispatchEvent(new Event('supabase-ready'));
-    console.log('Supabase: Client initialized');
 })();

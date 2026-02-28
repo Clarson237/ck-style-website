@@ -217,6 +217,20 @@
 
 /* Mobile Tweaks */
 @media (max-width: 768px) {
+    .wizard-container {
+        min-height: auto;
+    }
+
+    .wizard-nav {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg-card, #1a1a1a);
+        padding: 1rem;
+        margin-top: 1.5rem;
+        z-index: 10;
+        border-radius: 0 0 16px 16px;
+    }
+
     .measure-visual {
         min-height: 150px;
         padding: 1rem;

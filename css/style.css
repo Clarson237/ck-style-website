@@ -181,6 +181,28 @@ body {
     margin-bottom: 0.5rem;
 }
 
+/* Form Select (Dropdowns) */
+.form-select {
+    background-color: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+}
+
+.form-select:focus {
+    background-color: var(--bg-card);
+    border-color: var(--accent-color);
+    box-shadow: none;
+    color: var(--text-main);
+}
+
+/* Modal theme-aware styling */
+.modal-content {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
 /* Container Spacing */
 .section-padding {
     padding: clamp(60px, 10vw, 100px) 0;

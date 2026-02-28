@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const user = session.user;
-    console.log('Profile: User found', user.email);
+
 
     // 2. Display user email
     emailEl.textContent = user.email;
     emailEl.classList.remove('text-muted');
-    emailEl.classList.add('text-white');
+    emailEl.style.color = 'var(--text-main)';
 
     // 3. Fetch extra profile data if needed
     try {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (profile && profile.full_name) {
             // Could display full name somewhere if needed
-            console.log('User profile:', profile);
+
         }
     } catch (err) {
         console.error('Profile fetch error:', err);
@@ -232,7 +232,7 @@ async function viewMeasurementDetails(measurementId) {
                     <div class="mb-4">
                         <h6 class="text-gold text-uppercase mb-3">${category}</h6>
                         <div class="table-responsive">
-                            <table class="table table-dark table-sm">
+                            <table class="table table-sm mb-0" style="color: var(--text-main);">
                                 <tbody>
                                     ${categories[category].map(item => `
                                         <tr>

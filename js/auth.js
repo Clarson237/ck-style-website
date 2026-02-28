@@ -29,7 +29,7 @@ const Auth = {
     },
 
     async signUp(email, password) {
-        console.log("Auth: Supabase signUp for:", email);
+
         const supabase = window.supabaseClient;
         try {
             const { data, error } = await supabase.auth.signUp({
@@ -50,9 +50,9 @@ const Auth = {
 
             // Session: when email confirmation is OFF in Supabase, data.session is set and user is logged in immediately.
             if (data.session) {
-                console.log("Auth: signUp session created, user is logged in");
+
             } else {
-                console.warn("Auth: signUp no session (enable 'Confirm email' OFF in Supabase Auth → Providers → Email for immediate login)");
+                console.warn("Auth: signUp no session — enable 'Confirm email' OFF in Supabase Auth for immediate login");
             }
 
             // Create profile row (RLS must allow insert for auth.uid())
@@ -74,7 +74,7 @@ const Auth = {
     },
 
     async logIn(email, password) {
-        console.log("Auth: Supabase logIn for:", email);
+
         try {
             const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
             if (error) return { user: null, error };
@@ -86,7 +86,7 @@ const Auth = {
     },
 
     async logOut() {
-        console.log("Auth: Supabase logOut");
+
         try {
             await window.supabaseClient.auth.signOut();
             window.location.href = 'index.html';
@@ -98,16 +98,16 @@ const Auth = {
     },
 
     async resetPassword(email) {
-        console.log("Auth: Supabase resetPassword for:", email);
+
         var options = {};
         var origin = typeof window !== 'undefined' && window.location && window.location.origin;
         if (origin && (origin.startsWith('http://') || origin.startsWith('https://'))) {
             options.redirectTo = new URL('reset-password.html', window.location.href).href;
-            console.log("Auth: resetPassword redirectTo:", options.redirectTo);
+
         }
         try {
             var out = await window.supabaseClient.auth.resetPasswordForEmail(email, options);
-            console.log("Auth: resetPasswordForEmail response:", { data: out.data, error: out.error });
+
             var err = out.error;
             if (err && typeof err === 'object' && !err.message && !err.msg && !err.error_description && Object.keys(err).length === 0) {
                 err = null;
@@ -141,7 +141,7 @@ function whenSupabaseReady(fn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Auth: Initializing handlers...");
+
     runAuthHandlers();
 });
 
@@ -191,8 +191,7 @@ function runAuthHandlers() {
                             <p>Welcome to CK STYLE. Redirecting to your dashboard...</p>
                         </div>
                     `;
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const redirect = urlParams.get('redirect') || 'index.html';
+                    const redirect = sanitizeRedirect(new URLSearchParams(window.location.search).get('redirect'));
                     setTimeout(() => { window.location.href = redirect; }, 1500);
                 }
             } catch (err) {
@@ -395,4 +394,12 @@ function runAuthHandlers() {
             }
         })();
     }
+}
+
+// Sanitize redirect parameter to prevent open redirect attacks
+function sanitizeRedirect(url) {
+    if (!url) return 'index.html';
+    // Only allow relative paths (no protocol/scheme, no // prefix)
+    if (/^[a-zA-Z][a-zA-Z0-9_\-]*\.html/.test(url)) return url;
+    return 'index.html';
 }

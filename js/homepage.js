@@ -1,6 +1,6 @@
 /**
  * CK STYLE - Homepage Dynamic Content
- * Loads random featured product and handles animations
+ * Loads all published collections in the same grid layout as the collection page
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -33,11 +33,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Load featured product
-    await loadFeaturedProduct();
+    // Load collections
+    await loadFeaturedCollections();
 });
 
-async function loadFeaturedProduct() {
+async function loadFeaturedCollections() {
     const container = document.getElementById('product-container');
 
     try {
@@ -55,7 +55,7 @@ async function loadFeaturedProduct() {
 
         const supabase = window.supabaseClient;
 
-        // Fetch all published products
+        // Fetch all published collections with images
         const { data: products, error } = await supabase
             .from('collections')
             .select('*, collection_images(image_url)')
@@ -66,66 +66,101 @@ async function loadFeaturedProduct() {
 
         if (!products || products.length === 0) {
             container.innerHTML = `
-                <div class="alert alert-warning">
-                    <p class="mb-0">No products available at the moment. Check back soon!</p>
+                <div class="text-center py-5">
+                    <p class="text-muted mb-0">No masterpieces available at the moment. Check back soon!</p>
                 </div>
             `;
             return;
         }
 
-        // Select a random product
-        const randomProduct = products[Math.floor(Math.random() * products.length)];
-
-        // Get product images
-        const images = [];
-        if (randomProduct.image_url) images.push(randomProduct.image_url);
-        if (randomProduct.collection_images) {
-            randomProduct.collection_images.forEach(img => {
-                if (img.image_url) images.push(img.image_url);
-            });
+        // Build all images for a collection
+        function getCollectionImages(item) {
+            const images = [];
+            if (item.image_url) images.push(item.image_url);
+            if (item.collection_images) {
+                item.collection_images.forEach(ci => {
+                    if (ci.image_url) images.push(ci.image_url);
+                });
+            }
+            return images.filter(u => u && u.trim().length > 2).map(u => u.trim());
         }
 
-        const coverImage = images[0] || 'https://via.placeholder.com/800x1200?text=CK+STYLE';
-        const priceFormatted = randomProduct.price_fcfa
-            ? new Intl.NumberFormat().format(randomProduct.price_fcfa) + ' FCFA'
-            : 'Price on Request';
+        // Clear skeleton
+        container.innerHTML = '';
 
-        // Render product card
-        container.innerHTML = `
-            <div class="row justify-content-center">
-                <div class="col-lg-6 col-md-8">
-                    <div class="showcase-card">
-                        <div class="showcase-img">
-                            <img src="${coverImage}" alt="${randomProduct.title}" 
-                                onerror="this.src='https://via.placeholder.com/800x1200?text=CK+STYLE'">
-                            <div class="showcase-badge">${randomProduct.category || 'Collection'}</div>
-                            <div class="showcase-price">${priceFormatted}</div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="h3 mb-3">${randomProduct.title}</h3>
-                            <p class="text-muted mb-4">${randomProduct.description || 'A timeless masterpiece of style and elegance.'}</p>
-                            <div class="d-grid gap-2">
-                                <a href="collection.html" class="btn btn-primary btn-lg">View Full Collection</a>
-                            </div>
-                        </div>
+        // Render each collection in the same style as collection.html
+        products.forEach((item, collIdx) => {
+            const images = getCollectionImages(item);
+            if (images.length === 0) return;
+
+            const priceFormatted = item.price_fcfa
+                ? new Intl.NumberFormat().format(item.price_fcfa) + ' FCFA'
+                : 'Price on Request';
+
+            // WhatsApp link
+            const waText = encodeURIComponent(
+                `Hi CK STYLE! I'm interested in "${item.title}" (${priceFormatted}). Please tell me more!`
+            );
+            const waLink = `https://wa.me/237671002411?text=${waText}`;
+
+            // Build collection section
+            const section = document.createElement('div');
+            section.className = 'collection-section';
+            section.setAttribute('data-cat', item.category);
+
+            section.innerHTML = `
+                <div class="collection-header">
+                    <div class="collection-header-left">
+                        <div class="collection-category">${item.category || 'Collection'}</div>
+                        <h2 class="collection-name">${item.title}</h2>
                     </div>
+                    <div class="collection-price">${priceFormatted}</div>
                 </div>
-            </div>
-        `;
+                <div class="collection-images row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-md-3" id="home-coll-grid-${collIdx}"></div>
+                <a href="${waLink}" target="_blank" class="collection-wa-btn">
+                    💬 Inquire about this piece
+                </a>
+            `;
 
-        // Animate product card entrance
-        gsap.from('.showcase-card', {
-            y: 20,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out"
+            container.appendChild(section);
+
+            // Populate images
+            const grid = document.getElementById(`home-coll-grid-${collIdx}`);
+            images.forEach((url, imgIdx) => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.innerHTML = `
+                    <a href="collection.html" class="collection-img-wrap" style="text-decoration:none;">
+                        <img src="${url}" alt="${item.title} - Image ${imgIdx + 1}" loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/600x800?text=Image+Unavailable'">
+                        <span class="img-view-icon">🔍</span>
+                        ${images.length > 1 ? `<span class="img-number">${imgIdx + 1}/${images.length}</span>` : ''}
+                    </a>
+                `;
+                grid.appendChild(col);
+            });
+
+            // Staggered reveal animation
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    section.classList.add('revealed');
+                }, collIdx * 120);
+            });
         });
 
+        // Add a "View Full Collection" button at the bottom
+        const viewAllBtn = document.createElement('div');
+        viewAllBtn.className = 'text-center mt-5';
+        viewAllBtn.innerHTML = `
+            <a href="collection.html" class="btn btn-primary btn-lg px-5">View Full Collection</a>
+        `;
+        container.appendChild(viewAllBtn);
+
     } catch (error) {
-        console.error('Failed to load featured product:', error);
+        console.error('Failed to load collections:', error);
         container.innerHTML = `
             <div class="alert alert-danger">
-                <p class="mb-0">Failed to load featured product. Please refresh the page.</p>
+                <p class="mb-0">Failed to load collections. Please refresh the page.</p>
             </div>
         `;
     }

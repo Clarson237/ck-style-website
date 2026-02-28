@@ -350,62 +350,224 @@
             background: var(--bg-card);
         }
 
-        .showcase-card {
-            background: var(--bg-main);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        /* ── Collection Section Grid (same as collection page) ── */
+        .collection-section {
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        .showcase-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            border-color: var(--accent-color);
+        .collection-section.revealed {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .showcase-img {
-            height: 500px;
-            overflow: hidden;
+        .collection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .collection-header-left {
+            min-width: 0;
+        }
+
+        .collection-category {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .collection-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-main, #f5f5f5);
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="light"] .collection-name {
+            color: var(--text-main, #1a1a1a);
+        }
+
+        .collection-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            white-space: nowrap;
+        }
+
+        .collection-images .col {
+            padding: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .collection-images .col {
+                padding: 7px;
+            }
+        }
+
+        .collection-img-wrap {
             position: relative;
-            background: #000;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            background: #111;
+            cursor: pointer;
+            border-radius: 6px;
+            display: block;
         }
 
-        .showcase-img img {
+        [data-theme="light"] .collection-img-wrap {
+            background: #e8e8e8;
+        }
+
+        .collection-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 1s ease;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            display: block;
         }
 
-        .showcase-card:hover .showcase-img img {
-            transform: translateY(-5px);
+        .collection-img-wrap:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.05);
         }
 
-        .showcase-badge {
+        .collection-img-wrap::after {
+            content: '';
             position: absolute;
-            top: 20px;
-            left: 20px;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        .collection-img-wrap:hover::after {
+            opacity: 1;
+        }
+
+        .img-view-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            color: #fff;
+            font-size: 1.6rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 2;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .collection-img-wrap:hover .img-view-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .img-number {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            z-index: 2;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .collection-wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 9px 18px;
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .collection-wa-btn:hover {
             background: var(--accent-color);
             color: #000;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
+            transform: translateY(-2px);
         }
 
-        .showcase-price {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            color: var(--accent-color);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            border: 1px solid var(--accent-color);
+        @media (max-width: 768px) {
+            .collection-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+        }
+
+        /* Skeleton placeholders */
+        .skeleton-section {
+            margin-bottom: 40px;
+        }
+
+        .skeleton-title {
+            height: 20px;
+            width: 200px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        [data-theme="light"] .skeleton-title {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.04) 75%);
+            background-size: 200% 100%;
+        }
+
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .skeleton-img {
+            aspect-ratio: 3 / 4;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        [data-theme="light"] .skeleton-img {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.04) 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes skeletonShimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         /* Measurement Section */
@@ -683,25 +845,30 @@
             <div class="scroll-indicator">↓ Scroll to Discover</div>
         </header>
 
-        <!-- Featured Product Showcase -->
+        <!-- Featured Masterpieces -->
         <section class="product-showcase reveal-on-scroll" id="featured-product">
             <div class="container">
-                <h2 class="section-title" data-gsap="fadeUp">Featured Masterpiece</h2>
+                <h2 class="section-title" data-gsap="fadeUp">Featured Masterpieces</h2>
                 <p class="section-subtitle" data-gsap="fadeUp" data-delay="0.1">
                     Handpicked excellence from our premium collection
                 </p>
-                <div id="product-container" class="text-center">
-                    <!-- Skeleton Shimmer Loading -->
-                    <div class="row justify-content-center">
-                        <div class="col-lg-6 col-md-8">
-                            <div class="skeleton-shimmer" style="border-radius:30px;overflow:hidden">
-                                <div class="skeleton-card-img"></div>
-                                <div style="padding:24px">
-                                    <div class="skeleton-line w-60 skeleton-shimmer"></div>
-                                    <div class="skeleton-line w-80 skeleton-shimmer"></div>
-                                    <div class="skeleton-line w-40 skeleton-shimmer"></div>
-                                </div>
-                            </div>
+                <div id="product-container">
+                    <!-- Skeleton Loading -->
+                    <div class="skeleton-section">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-grid">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-img"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-section">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-grid">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-img"></div>
                         </div>
                     </div>
                 </div>
@@ -1171,8 +1338,8 @@
                 el.classList.add('ck-flip-target');
 
                 // Determine direction
-                if (el.classList.contains('showcase-card')) {
-                    el.classList.add('ck-flip-left'); // Single items default left
+                if (el.classList.contains('collection-section')) {
+                    el.classList.add('ck-flip-left'); // Collection sections default left
                 } else if (index % 2 === 0) {
                     el.classList.add('ck-flip-left');
                 } else {
@@ -1190,13 +1357,13 @@
                 const staticTargets = document.querySelectorAll('.measurement-card, .why-card, .testimonial-card');
                 staticTargets.forEach((el, i) => applyAnimationToElement(el, i));
 
-                // Dynamic elements observer (for .showcase-card loaded by homepage.js)
+                // Dynamic elements observer (for .collection-section loaded by homepage.js)
                 const mutationObserver = new MutationObserver((mutations) => {
                     mutations.forEach((mutation) => {
                         mutation.addedNodes.forEach((node) => {
                             if (node.nodeType === 1) { // Element
-                                const dynamicTargets = node.querySelectorAll('.showcase-card') || [];
-                                if (node.classList.contains('showcase-card')) {
+                                const dynamicTargets = node.querySelectorAll('.collection-section') || [];
+                                if (node.classList.contains('collection-section')) {
                                     applyAnimationToElement(node);
                                 }
                                 dynamicTargets.forEach(el => applyAnimationToElement(el));
@@ -1207,8 +1374,8 @@
 
                 mutationObserver.observe(document.body, { childList: true, subtree: true });
 
-                // Check if showcase-card already exists (e.g. if loaded very fast)
-                document.querySelectorAll('.showcase-card').forEach(el => applyAnimationToElement(el));
+                // Check if collection-section already exists (e.g. if loaded very fast)
+                document.querySelectorAll('.collection-section').forEach(el => applyAnimationToElement(el));
             };
 
             if (document.readyState === 'loading') {

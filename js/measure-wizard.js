@@ -164,7 +164,7 @@ const MeasurementWizard = {
                         <div class="input-group input-group-lg mb-3">
                             <input type="number" id="measurement_input" class="form-control text-center fw-bold" 
                                 value="${value}" placeholder="0.0 (optional)" step="0.1" autofocus>
-                            <span class="input-group-text bg-dark text-white">${this.state.data.unit}</span>
+                            <span class="input-group-text" style="background: var(--bg-card); color: var(--text-main); border-color: var(--glass-border);">${this.state.data.unit}</span>
                         </div>
                         <button class="btn btn-outline-secondary btn-sm w-100" onclick="MeasurementWizard.skipCurrent()">Skip This Measurement</button>
                     </div>
@@ -177,6 +177,13 @@ const MeasurementWizard = {
         this.dom.nextBtn.disabled = false;
 
         document.getElementById('measurement_input').focus();
+        // Scroll the measurement heading into view on mobile so users can see what they're measuring
+        setTimeout(() => {
+            const container = document.querySelector('.animate-fade-up');
+            if (container) {
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
     },
 
     // Show review
@@ -202,7 +209,7 @@ const MeasurementWizard = {
                     <p class="text-muted">Please verify before saving</p>
                 </div>
                 
-                <div class="card bg-dark border-secondary mb-4">
+                <div class="card border-0" style="background: var(--bg-card); border: 1px solid var(--glass-border) !important; border-radius: 16px;">
                     <div class="card-body">
                         <div class="row text-center">
                             <div class="col-3">
@@ -226,7 +233,7 @@ const MeasurementWizard = {
                 </div>
                 
                 <div class="table-responsive glass rounded-4 p-3">
-                    <table class="table table-dark table-borderless mb-0">
+                    <table class="table table-borderless mb-0" style="color: var(--text-main);">
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
@@ -407,7 +414,7 @@ const MeasurementWizard = {
                 measurement_id: session_record.id,
                 category: m.category,
                 measurement_key: m.key,
-                measurement_value: this.state.data[m.key],
+                measurement_value: parseFloat(this.state.data[m.key]) || 0,
                 display_name: m.name
             }));
 

@@ -37,7 +37,7 @@
                             </div>
                             <div>
                                 <h2 class="mb-1 text-gold fw-bold">Account Settings</h2>
-                                <p id="user-email" class="text-white mb-0 opacity-75">Loading user profile...</p>
+                                <p id="user-email" class="text-muted mb-0">Loading user profile...</p>
                             </div>
                         </div>
 
@@ -87,8 +87,9 @@
     <!-- Measurement Details Modal -->
     <div class="modal fade" id="measurementModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-white border-secondary">
-                <div class="modal-header border-secondary">
+            <div class="modal-content glass border-0 rounded-4"
+                style="border: 1px solid var(--glass-border) !important;">
+                <div class="modal-header" style="border-bottom: 1px solid var(--glass-border);">
                     <h5 class="modal-title" id="modalTitle">Measurement Details</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -98,7 +99,7 @@
                         <p class="text-muted mt-3">Loading...</p>
                     </div>
                 </div>
-                <div class="modal-footer border-secondary">
+                <div class="modal-footer" style="border-top: 1px solid var(--glass-border);">
                     <button type="button" class="btn btn-outline-secondary" onclick="downloadCSV()">📊 Download
                         CSV</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="downloadPDF()">📄 Download

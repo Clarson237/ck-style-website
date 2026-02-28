@@ -1,24 +1,21 @@
-// admin-core.js - ADVANCED DIAGNOSTIC VERSION
+// admin-core.js - Admin Access Control
 (function () {
     // Hide UI initially
     document.documentElement.style.display = 'none';
 
-    async function runDiagnosticCheck() {
-        console.log('Admin Security: Starting diagnostic check...');
+    async function runAccessCheck() {
 
         const whenSupabaseReady = (fn) => {
             if (window.supabaseClient) {
-                console.log('Admin: Supabase client already exists.');
                 fn();
             } else {
-                console.log('Admin: Waiting for supabase-ready event...');
+
                 window.addEventListener('supabase-ready', fn, { once: true });
             }
         };
 
         whenSupabaseReady(async () => {
-            const supabase = window.supabaseClient;
-            console.log('Admin: Supabase Client URL:', supabase.supabaseUrl);
+
 
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
@@ -36,7 +33,7 @@
             }
 
             const user = session.user;
-            console.log('Admin: Checking role for User ID:', user.id, 'Email:', user.email);
+
 
             // The Core Role Query
             const { data: roleData, error: dbError } = await supabase
@@ -70,7 +67,7 @@
             }
 
             // SUCCESS
-            console.log('Admin: Access granted as', roleData.role);
+
             window.adminRole = roleData.role;
             window.adminUser = user;
             document.documentElement.style.display = 'block';
@@ -78,7 +75,7 @@
     }
 
     // Run check
-    runDiagnosticCheck();
+    runAccessCheck();
 
     // Export audit log utility
     window.logAdminAction = async (action, resource, details = {}) => {

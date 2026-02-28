@@ -11,8 +11,8 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) return saved;
 
-        // Default to Light Mode as per user request
-        return THEMES.LIGHT;
+        // Default to Dark Mode
+        return THEMES.DARK;
     };
 
     const initialTheme = getInitialTheme();

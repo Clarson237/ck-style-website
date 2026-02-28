@@ -14,6 +14,8 @@
 
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas for Image Export -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -201,7 +203,12 @@
                 </div>
                 <div class="modal-footer border-top border-white-10">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-sm" id="modal-download-btn">Download PDF</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="modal-download-csv-btn">📊 Download
+                        CSV</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="modal-download-img-btn">🖼️ Download
+                        Image</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="modal-download-btn">📄 Download
+                        PDF</button>
                 </div>
             </div>
         </div>
@@ -213,6 +220,7 @@
         let allMeasurements = [];
         let filteredMeasurements = [];
         let itemsMap = {}; // Map measurement_id -> items array
+        let currentAdminMeasurement = null; // Currently viewed measurement for downloads
 
         document.addEventListener('DOMContentLoaded', () => {
             const whenSupabaseReady = (fn) => {
@@ -383,12 +391,128 @@
                 </div>
             `;
 
-            // Set download handler
-            document.getElementById('modal-download-btn').onclick = () => {
-                alert('PDF generation feature coming soon! Please use CSV export for now.');
-            };
+            // Store current measurement for download functions
+            currentAdminMeasurement = { measurement: m, items: items };
+
+            // Set download handlers
+            document.getElementById('modal-download-btn').onclick = () => downloadMeasurementPDF();
+            document.getElementById('modal-download-img-btn').onclick = () => downloadMeasurementImage();
+            document.getElementById('modal-download-csv-btn').onclick = () => downloadMeasurementCSV();
 
             new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        }
+
+        // ─── Individual Measurement Download Functions ───
+
+        function downloadMeasurementPDF() {
+            if (!currentAdminMeasurement) return;
+
+            const printContent = document.getElementById('modal-content').innerHTML;
+            const { measurement } = currentAdminMeasurement;
+
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${measurement.profile_name} - CK STYLE</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; }
+                        h1 { color: #d4af37; text-align: center; margin-bottom: 5px; }
+                        .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 30px; }
+                        h4 { margin-bottom: 4px; }
+                        h6 { color: #d4af37; text-transform: uppercase; margin-top: 20px; font-size: 12px; letter-spacing: 1px; }
+                        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
+                        .bg-secondary { background: #6c757d; color: white; }
+                        .bg-primary { background: #0d6efd; color: white; }
+                        .text-gold { color: #d4af37; }
+                        .text-muted { color: #888; }
+                        .row { display: flex; flex-wrap: wrap; gap: 10px; }
+                        .col-6 { flex: 0 0 48%; }
+                        .col-md-4 { flex: 0 0 31%; }
+                        .col-md-6 { flex: 0 0 48%; }
+                        .p-2 { padding: 10px; }
+                        .border { border: 1px solid #ddd; }
+                        .rounded { border-radius: 8px; }
+                        .fw-bold { font-weight: 700; }
+                        .fs-5 { font-size: 1.15rem; }
+                        .fs-6 { font-size: 0.9rem; }
+                        .small { font-size: 0.8rem; }
+                        .text-uppercase { text-transform: uppercase; }
+                        .mb-1 { margin-bottom: 4px; }
+                        .mb-4 { margin-bottom: 20px; }
+                        .mt-4 { margin-top: 20px; }
+                        .pt-3 { padding-top: 15px; }
+                        .border-top { border-top: 1px solid #ddd; }
+                        .text-center { text-align: center; }
+                        .text-md-end { text-align: right; }
+                        .footer { margin-top: 40px; text-align: center; color: #aaa; font-size: 11px; border-top: 1px solid #eee; padding-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>CK STYLE</h1>
+                    <div class="subtitle">Bespoke Measurement Profile</div>
+                    ${printContent}
+                    <div class="footer">
+                        &copy; ${new Date().getFullYear()} CK STYLE BESPOKE &bull; Generated on ${new Date().toLocaleDateString()}
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.print(); }, 300);
+        }
+
+        function downloadMeasurementImage() {
+            if (!currentAdminMeasurement || !window.html2canvas) {
+                alert('Image export library not loaded. Please refresh and try again.');
+                return;
+            }
+
+            const { measurement } = currentAdminMeasurement;
+            const modalBody = document.getElementById('modal-content');
+
+            html2canvas(modalBody, {
+                backgroundColor: '#1a1a1a',
+                scale: 2
+            }).then(canvas => {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${measurement.profile_name.replace(/\s+/g, '_')}_CK_STYLE.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            });
+        }
+
+        function downloadMeasurementCSV() {
+            if (!currentAdminMeasurement) return;
+
+            const { measurement, items } = currentAdminMeasurement;
+
+            let csv = 'CK STYLE - Measurement Profile\n\n';
+            csv += `Profile Name,${measurement.profile_name}\n`;
+            csv += `Full Name,${measurement.full_name}\n`;
+            csv += `Sex,${measurement.sex.toUpperCase()}\n`;
+            csv += `Unit,${measurement.unit}\n`;
+            csv += `Date,${new Date(measurement.created_at).toLocaleDateString()}\n\n`;
+
+            csv += 'Category,Measurement,Value\n';
+            items.forEach(item => {
+                const category = item.category || 'general';
+                const name = item.display_name || item.measurement_key.replace(/_/g, ' ');
+                csv += `${category},${name},${item.measurement_value} ${measurement.unit}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${measurement.profile_name.replace(/\s+/g, '_')}_CK_STYLE.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         // --- Export Functions ---

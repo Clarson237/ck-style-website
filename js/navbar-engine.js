@@ -220,7 +220,7 @@
 
                     if (list) {
                         list.innerHTML = `
-                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-dark">
+                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: var(--bg-card);">
                                 <span class="fw-bold small text-gold">NOTIFICATIONS</span>
                                 <button class="btn btn-link btn-sm text-muted p-0 text-decoration-none" id="clear-all-notifs">Clear All</button>
                             </li>
@@ -270,7 +270,6 @@
                 try {
                     const { error } = await supabase.auth.signOut();
                     if (error) throw error;
-                    console.log('Navbar: Sign Out successful');
                 } catch (err) {
                     console.error('Navbar: Sign Out error, forcing cleanup', err);
                     Object.keys(localStorage).forEach(key => {
