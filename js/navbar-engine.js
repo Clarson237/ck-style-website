@@ -5,6 +5,13 @@
  */
 
 (function () {
+    // HTML escape utility for XSS prevention
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        const s = String(str);
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    };
+
     const PATHS = {
         HOME: 'index.html',
         COLLECTION: 'collection.html',
@@ -307,10 +314,10 @@
                         <li>
                             <div class="dropdown-item p-3 border-bottom text-wrap" style="cursor: pointer;" onclick="window.markNotifRead('${n.id}')">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <h6 class="mb-1 fw-bold small text-${n.type === 'danger' ? 'danger' : (n.type === 'success' ? 'gold' : 'primary')}">${n.title}</h6>
+                                    <h6 class="mb-1 fw-bold small text-${n.type === 'danger' ? 'danger' : (n.type === 'success' ? 'gold' : 'primary')}">${escapeHtml(n.title)}</h6>
                                     <i class="bi bi-check2 text-muted ms-2" title="Click to Read"></i>
                                 </div>
-                                <p class="mb-1 small opacity-75">${n.message}</p>
+                                <p class="mb-1 small opacity-75">${escapeHtml(n.message)}</p>
                                 <p class="mb-0 x-small text-muted" style="font-size: 0.7rem;">${new Date(n.created_at).toLocaleTimeString()}</p>
                             </div>
                         </li>

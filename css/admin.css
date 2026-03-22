@@ -135,12 +135,17 @@ body {
 
 /* ── Admin Mobile Sidebar Toggle ── */
 .admin-sidebar-toggle {
+    position: sticky;
+    top: 70px; /* Match navbar height */
+    z-index: 1050; /* Above navbar (1040) to ensure visibility */
     display: none;
     width: 100%;
-    background: rgba(197, 160, 89, 0.1);
-    border: 1px solid rgba(197, 160, 89, 0.3);
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(197, 160, 89, 0.4);
     color: var(--admin-accent);
-    padding: 0.75rem 1.25rem;
+    padding: 0.85rem 1.25rem;
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.85rem;
@@ -148,9 +153,17 @@ body {
     letter-spacing: 1px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+@media (max-width: 991.98px) {
+    .admin-sidebar-toggle {
+        display: flex;
+    }
+}
 .admin-sidebar-toggle:hover {
     background: rgba(197, 160, 89, 0.2);
     border-color: var(--admin-accent);
@@ -158,7 +171,7 @@ body {
 
 .admin-sidebar-toggle .toggle-icon {
     transition: transform 0.3s ease;
-    display: inline-block;
+    font-size: 1.2rem;
 }
 
 .admin-sidebar-toggle[aria-expanded="true"] .toggle-icon {
@@ -167,46 +180,49 @@ body {
 
 /* ── Mobile Responsive Admin Layout ── */
 @media (max-width: 991.98px) {
+    .admin-sidebar {
+        overflow: visible !important;
+    }
+
     .admin-sidebar-toggle {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
     }
 
     .admin-sidebar .glass {
         position: static !important;
-        border-radius: 12px !important;
+        border-radius: 16px !important;
+        margin-bottom: 2rem;
+        padding: 1.5rem !important;
+    }
+
+    /* Support for vertical collapse on mobile */
+    #adminSidebarNav.collapse:not(.show) {
+        display: none !important;
+    }
+    
+    #adminSidebarNav.collapsing {
+        transition: height 0.35s ease;
     }
 
     .admin-sidebar .nav {
-        flex-direction: row !important;
-        flex-wrap: wrap;
+        flex-direction: column !important;
         gap: 0.5rem !important;
+        margin-top: 1rem;
     }
 
     .admin-sidebar .sidebar-link {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8rem;
-        border-radius: 8px;
-        white-space: nowrap;
+        padding: 0.85rem 1.25rem;
+        font-size: 0.9rem;
+        background: rgba(255, 255, 255, 0.02);
     }
 
     .admin-sidebar hr {
-        display: none;
+        margin: 1rem 0;
+        opacity: 0.1;
     }
 
     .admin-sidebar h6 {
-        display: none;
-    }
-}
-
-@media (max-width: 575.98px) {
-    .admin-sidebar .nav {
-        flex-direction: column !important;
-    }
-
-    .admin-sidebar .sidebar-link {
-        width: 100%;
-        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.7rem;
     }
 }

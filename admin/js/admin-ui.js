@@ -9,49 +9,21 @@
     });
 
     /**
-     * Mobile sidebar: wrap sidebar in a collapse and add a toggle button.
+     * Mobile sidebar: use existing HTML collapse and toggle.
      * Works with Bootstrap 5 collapse component.
      */
     function initMobileSidebar() {
-        const sidebar = document.querySelector('.col-lg-3');
-        if (!sidebar) return;
-
-        // Add class for CSS targeting
-        sidebar.classList.add('admin-sidebar');
-
-        const sidebarContent = sidebar.querySelector('.glass');
-        if (!sidebarContent) return;
-
-        // Create toggle button (only visible on mobile via CSS)
-        const toggle = document.createElement('button');
-        toggle.className = 'admin-sidebar-toggle';
-        toggle.type = 'button';
-        toggle.setAttribute('data-bs-toggle', 'collapse');
-        toggle.setAttribute('data-bs-target', '#adminSidebarCollapse');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-controls', 'adminSidebarCollapse');
-        toggle.innerHTML = `
-            <span>☰ Navigation</span>
-            <span class="toggle-icon">▼</span>
-        `;
-
-        // Wrap sidebar content in a collapse div
-        const collapseWrapper = document.createElement('div');
-        collapseWrapper.className = 'collapse d-lg-block';
-        collapseWrapper.id = 'adminSidebarCollapse';
-
-        // Move the glass panel inside the collapse wrapper
-        sidebar.insertBefore(toggle, sidebarContent);
-        sidebar.insertBefore(collapseWrapper, sidebarContent);
-        collapseWrapper.appendChild(sidebarContent);
+        const sidebarNav = document.getElementById('adminSidebarNav');
+        const toggle = document.querySelector('.admin-sidebar-toggle');
+        if (!sidebarNav || !toggle) return;
 
         // Auto-close sidebar on mobile when a link is clicked
-        const links = sidebar.querySelectorAll('.sidebar-link');
+        const links = sidebarNav.querySelectorAll('.sidebar-link');
         links.forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 992) {
-                    const collapse = bootstrap.Collapse.getInstance(collapseWrapper);
-                    if (collapse) collapse.hide();
+                    const bsCollapse = bootstrap.Collapse.getInstance(sidebarNav);
+                    if (bsCollapse) bsCollapse.hide();
                 }
             });
         });

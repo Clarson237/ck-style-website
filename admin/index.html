@@ -28,8 +28,15 @@
     <div class="container pb-5">
         <div class="row g-4">
             <!-- Sidebar -->
-            <div class="col-lg-3">
-                <div class="glass p-4 rounded-4 sticky-top" style="top: 100px;">
+            <div class="col-lg-3 admin-sidebar">
+                <button class="admin-sidebar-toggle" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#adminSidebarNav" aria-expanded="false" aria-controls="adminSidebarNav">
+                    <span>System Menu</span>
+                    <span class="toggle-icon">▾</span>
+                </button>
+
+                <div class="glass p-4 rounded-4 sticky-top collapse d-lg-block" id="adminSidebarNav"
+                    style="top: 100px;">
                     <h6 class="text-uppercase text-muted small fw-bold mb-4 ls-1">System Management</h6>
                     <nav class="nav flex-column gap-2">
                         <a class="sidebar-link active" href="index.html">Dashboard Overview</a>
@@ -39,8 +46,7 @@
                         <a class="sidebar-link" href="users.html">User Accounts</a>
                         <a class="sidebar-link" href="audit.html">System Audit</a>
                         <hr class="border-secondary my-3">
-                        <a class="sidebar-link text-danger" href="#"
-                            onclick="(async () => { await supabaseClient.auth.signOut(); window.location.href='../login.html'; })()">Sign
+                        <a class="sidebar-link text-danger" href="#">Sign
                             Out</a>
                     </nav>
                 </div>

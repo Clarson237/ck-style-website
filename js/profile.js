@@ -3,6 +3,13 @@
  * Handles loading user profile data and measurements with export functionality.
  */
 
+// HTML escape utility for XSS prevention
+function escapeHtmlProfile(str) {
+    if (!str) return '';
+    const s = String(str);
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // Global variable to store current measurement for exports
 let currentMeasurementData = null;
 
@@ -83,12 +90,12 @@ async function loadProfileNotifications(supabase, userId) {
             <div class="p-2 mb-2 border-bottom border-secondary border-opacity-25">
                 <div class="d-flex justify-content-between align-items-start">
                     <h6 class="mb-1 small fw-bold text-${n.type === 'danger' ? 'danger' : (n.type === 'success' ? 'gold' : 'primary')}">
-                        ${n.title}
+                        ${escapeHtmlProfile(n.title)}
                         ${!n.is_read ? '<span class="badge bg-danger ms-1" style="font-size: 0.5rem;">NEW</span>' : ''}
                     </h6>
                     <small class="text-muted" style="font-size: 0.7rem;">${new Date(n.created_at).toLocaleDateString()}</small>
                 </div>
-                <p class="mb-0 small opacity-75">${n.message}</p>
+                <p class="mb-0 small opacity-75">${escapeHtmlProfile(n.message)}</p>
             </div>
         `).join('');
 
@@ -133,14 +140,14 @@ async function loadMeasurements(supabase, userId) {
             <div class="glass p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1">${m.profile_name}</h5>
+                        <h5 class="mb-1">${escapeHtmlProfile(m.profile_name)}</h5>
                         <small class="text-muted">
-                            ${m.full_name} • ${m.sex.toUpperCase()} • ${m.unit}
+                            ${escapeHtmlProfile(m.full_name)} • ${escapeHtmlProfile(m.sex ? m.sex.toUpperCase() : '')} • ${escapeHtmlProfile(m.unit)}
                             <span class="ms-2">📅 ${new Date(m.created_at).toLocaleDateString()}</span>
                         </small>
                     </div>
                     <div>
-                        <button class="btn btn-sm btn-outline-gold" onclick="viewMeasurementDetails('${m.id}')">View Details</button>
+                        <button class="btn btn-sm btn-outline-gold" onclick="viewMeasurementDetails('${escapeHtmlProfile(m.id)}')">View Details</button>
                     </div>
                 </div>
             </div>
@@ -150,7 +157,7 @@ async function loadMeasurements(supabase, userId) {
 
     } catch (error) {
         console.error('Failed to load measurements:', error);
-        container.innerHTML = `<p class="text-danger">Failed to load measurements: ${error.message}</p>`;
+        container.innerHTML = `<p class="text-danger">Failed to load measurements: ${escapeHtmlProfile(error.message)}</p>`;
     }
 }
 
@@ -213,15 +220,15 @@ async function viewMeasurementDetails(measurementId) {
                 <div class="row text-center">
                     <div class="col-3">
                         <small class="text-muted d-block">NAME</small>
-                        <strong>${measurement.full_name}</strong>
+                        <strong>${escapeHtmlProfile(measurement.full_name)}</strong>
                     </div>
                     <div class="col-3">
                         <small class="text-muted d-block">SEX</small>
-                        <strong>${measurement.sex.toUpperCase()}</strong>
+                        <strong>${escapeHtmlProfile(measurement.sex ? measurement.sex.toUpperCase() : '')}</strong>
                     </div>
                     <div class="col-3">
                         <small class="text-muted d-block">UNIT</small>
-                        <strong>${measurement.unit}</strong>
+                        <strong>${escapeHtmlProfile(measurement.unit)}</strong>
                     </div>
                     <div class="col-3">
                         <small class="text-muted d-block">DATE</small>
@@ -242,7 +249,7 @@ async function viewMeasurementDetails(measurementId) {
                                 <tbody>
                                     ${categories[category].map(item => `
                                         <tr>
-                                            <td class="fw-bold">${item.display_name}</td>
+                                            <td class="fw-bold">${escapeHtmlProfile(item.display_name)}</td>
                                             <td class="text-end text-gold">${item.measurement_value} ${measurement.unit}</td>
                                         </tr>
                                     `).join('')}
@@ -264,7 +271,7 @@ async function viewMeasurementDetails(measurementId) {
         console.error('Failed to load measurement details:', error);
         modalBody.innerHTML = `
             <div class="alert alert-danger">
-                Failed to load details: ${error.message}
+                Failed to load details: ${escapeHtmlProfile(error.message)}
             </div>
         `;
     }

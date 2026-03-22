@@ -454,7 +454,8 @@ const MeasurementWizard = {
     },
 
     showError(msg) {
-        this.dom.msgContainer.innerHTML = `<div class="alert alert-danger animate-fade-up">${msg}</div>`;
+        const escaped = String(msg || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        this.dom.msgContainer.innerHTML = `<div class="alert alert-danger animate-fade-up">${escaped}</div>`;
     }
 };
 

@@ -1,5 +1,12 @@
 // measurements.js - Measurement handling logic for CK STYLE
 
+// HTML escape utility for XSS prevention
+function escapeHtmlMeasure(str) {
+    if (!str) return '';
+    const s = String(str);
+    return s.replace(/&/g, '&amp;').replace(/</, '&lt;').replace(/>/, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('measure-form');
     const msgDiv = document.getElementById('measure-msg');
@@ -8,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fields = ['height', 'shoulder', 'chest', 'waist', 'hips', 'sleeve', 'inseam'];
 
     const showMsg = (text, type = 'info') => {
-        msgDiv.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+        msgDiv.innerHTML = `<div class="alert alert-${escapeHtmlMeasure(type)}">${escapeHtmlMeasure(text)}</div>`;
         msgDiv.scrollIntoView({ behavior: 'smooth' });
     };
 
