@@ -15,8 +15,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const supabase = window.supabaseClient;
     const emailEl = document.getElementById('user-email');
 
-    // 1. Check Session
-    const { data: { session }, error } = await supabase.auth.getSession();
+    // 1. Check Session (reuse pre-fetched session)
+    let sessionResult;
+    if (window._supabaseSessionPromise) {
+        sessionResult = await window._supabaseSessionPromise;
+    } else {
+        sessionResult = await supabase.auth.getSession();
+    }
+    const { data: { session }, error } = sessionResult;
 
     if (error || !session) {
         console.warn('Profile: No active session', error);

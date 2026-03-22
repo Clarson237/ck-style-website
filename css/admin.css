@@ -1,0 +1,212 @@
+/* CK STYLE - Shared Admin Panel Styles */
+
+:root {
+    --admin-card-bg: var(--bg-card, rgba(255, 255, 255, 0.03));
+    --admin-accent: #c5a059;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main, #0a0a0a);
+    color: var(--text-main, #ffffff);
+}
+
+/* ── Sidebar Navigation ── */
+.sidebar-link {
+    color: #888;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: block;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: rgba(197, 160, 89, 0.1);
+    color: var(--admin-accent);
+}
+
+/* ── Premium Data Tables ── */
+.premium-table {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.premium-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--admin-accent);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 1.25rem;
+    border: none;
+}
+
+.premium-table td {
+    padding: 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    color: #ccc;
+}
+
+/* ── Admin Dashboard Cards ── */
+.admin-card {
+    background: var(--admin-card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.admin-card:hover {
+    border-color: var(--admin-accent);
+    transform: translateY(-5px);
+}
+
+.stats-number {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--admin-accent);
+    margin-bottom: 0.5rem;
+}
+
+/* ── Activity Timeline ── */
+.activity-item {
+    border-left: 2px solid var(--admin-accent);
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--admin-accent);
+    border-radius: 50%;
+}
+
+/* ── Search Inputs ── */
+.search-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.search-box:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--admin-accent);
+    color: white;
+    box-shadow: none;
+}
+
+/* ── Lead Status Badges ── */
+.status-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+}
+
+.bg-pending {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.bg-contacted {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    border: 1px solid rgba(13, 110, 253, 0.2);
+}
+
+.bg-converted {
+    background: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.2);
+}
+
+/* ── Admin Mobile Sidebar Toggle ── */
+.admin-sidebar-toggle {
+    display: none;
+    width: 100%;
+    background: rgba(197, 160, 89, 0.1);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    color: var(--admin-accent);
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.admin-sidebar-toggle:hover {
+    background: rgba(197, 160, 89, 0.2);
+    border-color: var(--admin-accent);
+}
+
+.admin-sidebar-toggle .toggle-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.admin-sidebar-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* ── Mobile Responsive Admin Layout ── */
+@media (max-width: 991.98px) {
+    .admin-sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .admin-sidebar .glass {
+        position: static !important;
+        border-radius: 12px !important;
+    }
+
+    .admin-sidebar .nav {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+    }
+
+    .admin-sidebar .sidebar-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .admin-sidebar hr {
+        display: none;
+    }
+
+    .admin-sidebar h6 {
+        display: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-sidebar .nav {
+        flex-direction: column !important;
+    }
+
+    .admin-sidebar .sidebar-link {
+        width: 100%;
+        text-align: center;
+    }
+}

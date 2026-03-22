@@ -1,22 +1,17 @@
 // admin-core.js - Admin Access Control
 (function () {
-    // Hide UI initially
+    // Hide UI initially until admin role is verified
     document.documentElement.style.display = 'none';
 
-    async function runAccessCheck() {
+    const whenSupabaseReady = (fn) => {
+        if (window.supabaseClient) fn();
+        else window.addEventListener('supabase-ready', fn, { once: true });
+    };
 
-        const whenSupabaseReady = (fn) => {
-            if (window.supabaseClient) {
-                fn();
-            } else {
+    whenSupabaseReady(async () => {
+        const supabase = window.supabaseClient;
 
-                window.addEventListener('supabase-ready', fn, { once: true });
-            }
-        };
-
-        whenSupabaseReady(async () => {
-
-
+        try {
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
             if (sessionError) {
@@ -34,8 +29,7 @@
 
             const user = session.user;
 
-
-            // The Core Role Query
+            // Check admin role
             const { data: roleData, error: dbError } = await supabase
                 .from('user_roles')
                 .select('role')
@@ -60,22 +54,19 @@
 
             if (roleData.role !== 'super_admin' && roleData.role !== 'admin') {
                 console.warn('Admin: Role found but insufficient privileges:', roleData.role);
-                // await window.logAdminAction('INSUFFICIENT_CLEARANCE', 'admin_access', { role: roleData.role, email: user.email });
-                // alert('Access Denied: You do not have sufficient permissions.');
                 window.location.href = '../index.html';
                 return;
             }
 
-            // SUCCESS
-
+            // SUCCESS — reveal the page
             window.adminRole = roleData.role;
             window.adminUser = user;
-            document.documentElement.style.display = 'block';
-        });
-    }
-
-    // Run check
-    runAccessCheck();
+            document.documentElement.style.display = '';
+        } catch (err) {
+            console.error('Admin: Unexpected error during access check:', err);
+            window.location.href = '../login.html';
+        }
+    });
 
     // Export audit log utility
     window.logAdminAction = async (action, resource, details = {}) => {

@@ -11,6 +11,7 @@
     <script src="../js/supabase.js"></script>
     <script src="../js/navbar-engine.js"></script>
     <script src="js/admin-core.js"></script>
+    <script src="js/admin-ui.js"></script>
 
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -23,70 +24,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/animations.css">
-    <style>
-        :root {
-            --admin-card-bg: var(--bg-card, rgba(255, 255, 255, 0.03));
-            --admin-accent: #c5a059;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-main, #0a0a0a);
-            color: var(--text-main, #ffffff);
-        }
-
-        .sidebar-link {
-            color: #888;
-            text-decoration: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            display: block;
-            transition: all 0.2s;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(197, 160, 89, 0.1);
-            color: var(--admin-accent);
-        }
-
-        .premium-table {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .premium-table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--admin-accent);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            padding: 1.25rem;
-            border: none;
-        }
-
-        .premium-table td {
-            padding: 1.25rem;
-            vertical-align: middle;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            color: #ccc;
-        }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .search-box:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--admin-accent);
-            color: white;
-            box-shadow: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body class="bg-main">
@@ -536,7 +474,7 @@
                 // Add items dynamically
                 const items = itemsMap[m.id] || [];
                 items.forEach(i => {
-                    flat[i.measurement_key] = i.measurement_value;
+                    flat[i.measurement_key] = `${i.measurement_value} ${m.unit}`;
                 });
 
                 return flat;

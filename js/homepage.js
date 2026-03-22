@@ -1,6 +1,6 @@
 /**
  * CK STYLE - Homepage Dynamic Content
- * Loads all published collections in the same grid layout as the collection page
+ * Loads 2 random published collections in an eye-catching advertising layout
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -41,16 +41,11 @@ async function loadFeaturedCollections() {
     const container = document.getElementById('product-container');
 
     try {
-        // Wait for Supabase
+        // Wait for Supabase (event-driven, no polling)
         if (!window.supabaseClient) {
-            await new Promise(resolve => {
-                const check = setInterval(() => {
-                    if (window.supabaseClient) {
-                        clearInterval(check);
-                        resolve();
-                    }
-                }, 100);
-            });
+            await new Promise(resolve =>
+                window.addEventListener('supabase-ready', resolve, { once: true })
+            );
         }
 
         const supabase = window.supabaseClient;
@@ -73,6 +68,10 @@ async function loadFeaturedCollections() {
             return;
         }
 
+        // ── Pick 2 Random Collections ──
+        const shuffled = [...products].sort(() => Math.random() - 0.5);
+        const featured = shuffled.slice(0, 2);
+
         // Build all images for a collection
         function getCollectionImages(item) {
             const images = [];
@@ -88,8 +87,8 @@ async function loadFeaturedCollections() {
         // Clear skeleton
         container.innerHTML = '';
 
-        // Render each collection in the same style as collection.html
-        products.forEach((item, collIdx) => {
+        // Render the 2 featured collections in a premium advertising layout
+        featured.forEach((item, collIdx) => {
             const images = getCollectionImages(item);
             if (images.length === 0) return;
 
@@ -103,21 +102,23 @@ async function loadFeaturedCollections() {
             );
             const waLink = `https://wa.me/237671002411?text=${waText}`;
 
+            // Show max 4 images for a cleaner look
+            const displayImages = images.slice(0, 4);
+
             // Build collection section
             const section = document.createElement('div');
-            section.className = 'collection-section';
-            section.setAttribute('data-cat', item.category);
+            section.className = 'collection-section featured-showcase';
 
             section.innerHTML = `
                 <div class="collection-header">
                     <div class="collection-header-left">
-                        <div class="collection-category">${item.category || 'Collection'}</div>
-                        <h2 class="collection-name">${item.title}</h2>
+                        <div class="collection-category">${escapeHtml(item.category || 'Collection')}</div>
+                        <h2 class="collection-name">${escapeHtml(item.title)}</h2>
                     </div>
-                    <div class="collection-price">${priceFormatted}</div>
+                    <div class="collection-price">${escapeHtml(priceFormatted)}</div>
                 </div>
-                <div class="collection-images row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-md-3" id="home-coll-grid-${collIdx}"></div>
-                <a href="${waLink}" target="_blank" class="collection-wa-btn">
+                <div class="collection-images row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-2 g-md-3" id="home-coll-grid-${collIdx}"></div>
+                <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="collection-wa-btn">
                     💬 Inquire about this piece
                 </a>
             `;
@@ -126,15 +127,15 @@ async function loadFeaturedCollections() {
 
             // Populate images
             const grid = document.getElementById(`home-coll-grid-${collIdx}`);
-            images.forEach((url, imgIdx) => {
+            displayImages.forEach((url, imgIdx) => {
                 const col = document.createElement('div');
                 col.className = 'col';
                 col.innerHTML = `
                     <a href="collection.html" class="collection-img-wrap" style="text-decoration:none;">
-                        <img src="${url}" alt="${item.title} - Image ${imgIdx + 1}" loading="lazy"
+                        <img src="${escapeHtml(url)}" alt="${escapeHtml(item.title)} - Image ${imgIdx + 1}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/600x800?text=Image+Unavailable'">
                         <span class="img-view-icon">🔍</span>
-                        ${images.length > 1 ? `<span class="img-number">${imgIdx + 1}/${images.length}</span>` : ''}
+                        ${displayImages.length > 1 ? `<span class="img-number">${imgIdx + 1}/${displayImages.length}</span>` : ''}
                     </a>
                 `;
                 grid.appendChild(col);
@@ -144,15 +145,17 @@ async function loadFeaturedCollections() {
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     section.classList.add('revealed');
-                }, collIdx * 120);
+                }, collIdx * 200);
             });
         });
 
-        // Add a "View Full Collection" button at the bottom
+        // Add a prominent "View Full Collection" CTA
         const viewAllBtn = document.createElement('div');
-        viewAllBtn.className = 'text-center mt-5';
+        viewAllBtn.className = 'text-center mt-5 pt-3';
         viewAllBtn.innerHTML = `
-            <a href="collection.html" class="btn btn-primary btn-lg px-5">View Full Collection</a>
+            <a href="collection.html" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg">
+                View Full Collection →
+            </a>
         `;
         container.appendChild(viewAllBtn);
 
@@ -164,6 +167,17 @@ async function loadFeaturedCollections() {
             </div>
         `;
     }
+}
+
+// HTML escape utility for XSS prevention
+function escapeHtml(str) {
+    if (!str) return '';
+    const s = String(str);
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
 }
 
 // Initialize Testimonials Swiper

@@ -8,48 +8,48 @@ const MeasurementWizard = {
     config: {
         FEMALE_MEASUREMENTS: [
             // Top
-            { category: 'top', key: 'hand_length', name: 'Hand Length', desc: 'Measure from shoulder joint to wrist bone. Arm relaxed, not bent.' },
-            { category: 'top', key: 'hand_round', name: 'Hand Round', desc: 'Wrap tape around widest part of upper arm. Snug but not tight.' },
-            { category: 'top', key: 'wrist_round', name: 'Wrist Round', desc: 'Measure around the wrist at its narrowest point.' },
-            { category: 'top', key: 'chest', name: 'Chest', desc: 'Measure around fullest part of chest, under arms, tape level.' },
-            { category: 'top', key: 'shoulder', name: 'Shoulder', desc: 'Measure from one shoulder bone to the other across back.' },
-            { category: 'top', key: 'neck', name: 'Neck Round', desc: 'Measure around base of neck. Leave one finger space.' },
-            { category: 'top', key: 'stomach', name: 'Stomach', desc: 'Measure around fullest part of stomach. Stand naturally.' },
-            { category: 'top', key: 'top_length', name: 'Top Length', desc: 'Measure from shoulder down to desired top length.' },
+            { category: 'top', key: 'hand_length', name: 'Hand Length', desc: '1. Stand up straight with your arm relaxed at your side.<br>2. Find your shoulder joint (where the shoulder meets the arm).<br>3. Measure from the shoulder joint down to your wrist bone.<br>💡 Keep the tape straight and do not bend the arm.' },
+            { category: 'top', key: 'hand_round', name: 'Hand Round', desc: '1. Wrap the tape measure around the widest part of your upper arm (bicep).<br>2. Ensure the tape is level all the way around.<br>3. Keep it snug but not tight enough to pinch the skin.<br>💡 Leave enough room to slide one finger under the tape.' },
+            { category: 'top', key: 'wrist_round', name: 'Wrist Round', desc: '1. Measure exactly around the wrist bone.<br>2. Keep the tape measure comfortably flush against the skin.<br>💡 This ensures the sleeve cuff will fit perfectly without being too loose or tight.' },
+            { category: 'top', key: 'chest', name: 'Chest', desc: '1. Empty your lungs by exhaling normally.<br>2. Wrap the tape around the fullest part of your chest (usually across the nipples).<br>3. Make sure the tape is perfectly horizontal across your back.<br>💡 Do not pull the tape too tight; stand naturally without puffing out your chest.' },
+            { category: 'top', key: 'shoulder', name: 'Shoulder', desc: '1. Have someone help you measure across your back.<br>2. Find the prominent bone at the tip of each shoulder.<br>3. Measure directly from one shoulder bone to the other across the natural curve of the back.' },
+            { category: 'top', key: 'neck', name: 'Neck Round', desc: '1. Wrap the tape around the base of your neck where a collar would naturally sit.<br>2. Keep the tape level.<br>3. Insert two fingers between the tape and your neck to ensure a comfortable breathing fit.' },
+            { category: 'top', key: 'stomach', name: 'Stomach', desc: '1. Wrap the tape around the widest part of your stomach/abdomen.<br>2. This is usually around the belly button area.<br>3. Do not suck your stomach in; stand in a natural, relaxed posture.' },
+            { category: 'top', key: 'top_length', name: 'Top Length', desc: '1. Start the tape at the highest point of your shoulder (near the base of the neck).<br>2. Let the tape fall straight down your front.<br>3. Measure down to your desired length (e.g., hip level or below).' },
 
             // Gown
-            { category: 'gown', key: 'gown_length', name: 'Gown Length', desc: 'Measure from shoulder to desired gown length.' },
-            { category: 'gown', key: 'gown_shoulder', name: 'Gown Shoulder', desc: 'Measure shoulder to shoulder across back.' },
-            { category: 'gown', key: 'gown_chest', name: 'Gown Chest', desc: 'Measure around fullest part of chest.' },
+            { category: 'gown', key: 'gown_length', name: 'Gown Length', desc: '1. Wear shoes with the heel height you intend to wear with the gown.<br>2. Measure from the top of the shoulder (near the neck base).<br>3. Drop the tape straight down over the chest to your desired gown hem level (floor, ankle, etc.).' },
+            { category: 'gown', key: 'gown_shoulder', name: 'Gown Shoulder', desc: '1. Stand straight and tall.<br>2. Have a helper measure across your back from the exact tip of one shoulder bone to the tip of the other.' },
+            { category: 'gown', key: 'gown_chest', name: 'Gown Chest', desc: '1. Wearing a standard, unpadded bra, wrap the tape around the fullest part of your bust.<br>2. Keep the tape completely level parallel to the floor around your back.' },
 
             // Trousers
-            { category: 'trousers', key: 'trouser_length', name: 'Trouser Length', desc: 'Measure from waist to ankle. Stand straight.' },
-            { category: 'trousers', key: 'lap', name: 'Lap (Thigh)', desc: 'Measure around widest part of thigh.' },
-            { category: 'trousers', key: 'waist', name: 'Waist', desc: 'Measure around natural waistline. No tightening.' },
-            { category: 'trousers', key: 'back_foot', name: 'Back Foot', desc: 'Measure from waist (back) down to ankle.' },
-            { category: 'trousers', key: 'foot_round', name: 'Foot Round', desc: 'Measure around ankle opening.' },
-            { category: 'trousers', key: 'knee_round', name: 'Knee Round', desc: 'Measure around knee while standing.' },
-            { category: 'trousers', key: 'hips', name: 'Hips', desc: 'Measure around fullest part of hips/buttocks.' }
+            { category: 'trousers', key: 'trouser_length', name: 'Trouser Length', desc: '1. Stand barefoot or in typical shoes.<br>2. Measure from your natural waistline (the narrowest part of your torso).<br>3. Run the tape down the side of your leg to your ankle bone or desired trouser length.' },
+            { category: 'trousers', key: 'lap', name: 'Lap (Thigh)', desc: '1. Stand with feet slightly apart.<br>2. Wrap the tape around the absolute thickest part of your upper thigh.<br>3. Ensure the tape is level and snug, but not constricting.' },
+            { category: 'trousers', key: 'waist', name: 'Waist', desc: '1. Locate your natural waistline (usually just above the belly button and below the rib cage).<br>2. Wrap the tape around this point.<br>3. Breathe out normally and keep one finger under the tape for comfort.' },
+            { category: 'trousers', key: 'back_foot', name: 'Back Foot', desc: '1. Measure starting right at the waistline on your back.<br>2. Tape should run straight down the back of your leg to the floor/ankle.<br>💡 This is crucial for trouser rise and drop measurements.' },
+            { category: 'trousers', key: 'foot_round', name: 'Foot Round', desc: '1. Measure around the tip of your heel and the top of your foot.<br>2. Keep the tape wrapped diagonally around the ankle opening area.<br>💡 This ensures your foot can easily slip through the trouser hem.' },
+            { category: 'trousers', key: 'knee_round', name: 'Knee Round', desc: '1. Stand naturally with your leg unbent.<br>2. Measure around your kneecap and the back of your knee.<br>3. Do not pull too tight; leave a bit of ease for sitting and walking.' },
+            { category: 'trousers', key: 'hips', name: 'Hips', desc: '1. Remove any bulky items from your pockets.<br>2. Stand with your feet together.<br>3. Wrap the tape measure securely around the fullest, widest part of your hips and buttocks.' }
         ],
         MALE_MEASUREMENTS: [
             // Top
-            { category: 'top', key: 'hand_length', name: 'Hand Length', desc: 'Measure from shoulder joint to wrist bone.' },
-            { category: 'top', key: 'hand_round', name: 'Hand Round', desc: 'Wrap tape around widest part of upper arm.' },
-            { category: 'top', key: 'wrist_round', name: 'Wrist Round', desc: 'Measure around the wrist at its narrowest point.' },
-            { category: 'top', key: 'chest', name: 'Chest', desc: 'Measure around fullest part of chest.' },
-            { category: 'top', key: 'shoulder', name: 'Shoulder', desc: 'Measure from one shoulder bone to the other.' },
-            { category: 'top', key: 'neck', name: 'Neck Round', desc: 'Measure around base of neck.' },
-            { category: 'top', key: 'stomach', name: 'Stomach', desc: 'Measure around fullest part of stomach.' },
-            { category: 'top', key: 'top_length', name: 'Top Length', desc: 'Measure from shoulder down to desired length.' },
+            { category: 'top', key: 'hand_length', name: 'Hand Length', desc: '1. Keep your arm relaxed down at your side.<br>2. Start the tape exactly where the shoulder seam of a well-fitting shirt would sit.<br>3. Measure straight down to the wrist bone where you want the cuff to end.' },
+            { category: 'top', key: 'hand_round', name: 'Hand Round', desc: '1. Wrap the tape around the thickest part of your bicep.<br>2. Relax the arm (do not flex).<br>3. Keep the tape horizontal and snug, and slide two fingers underneath for comfort ease.' },
+            { category: 'top', key: 'wrist_round', name: 'Wrist Round', desc: '1. Wrap the tape precisely around the wrist bone.<br>2. Keep it snug.<br>💡 We will automatically add the necessary ease for your shirt/suit cuffs.' },
+            { category: 'top', key: 'chest', name: 'Chest', desc: '1. Relax and breathe out naturally.<br>2. Wrap the tape around the fullest part of your chest, right under the armpits.<br>3. Ensure the tape is horizontal across your shoulder blades in the back.' },
+            { category: 'top', key: 'shoulder', name: 'Shoulder', desc: '1. Have a friend measure across your upper back.<br>2. Start at the outer tip of one shoulder bone.<br>3. Measure across the natural curve of the shoulders to the outer tip of the other shoulder bone.' },
+            { category: 'top', key: 'neck', name: 'Neck Round', desc: '1. Measure around the lower part of your neck, slightly below the Adams apple.<br>2. Keep the tape level.<br>3. Insert exactly two fingers flat between the tape and your neck for breathing room.' },
+            { category: 'top', key: 'stomach', name: 'Stomach', desc: '1. Measure around your waist/stomach at its widest point.<br>2. This is usually at or just below the belly button.<br>3. Do NOT suck in your stomach; stand relaxed and breathe normally.' },
+            { category: 'top', key: 'top_length', name: 'Top Length', desc: '1. Find the base of the back of your neck (where the collar sits).<br>2. Run the tape straight down the center of your back.<br>3. Stop at the point where you want the shirt or suit jacket to end (typically mid-crotch level).' },
 
             // Trousers
-            { category: 'trousers', key: 'trouser_length', name: 'Trouser Length', desc: 'Measure from waist to ankle.' },
-            { category: 'trousers', key: 'lap', name: 'Lap (Thigh)', desc: 'Measure around widest part of thigh.' },
-            { category: 'trousers', key: 'waist', name: 'Waist', desc: 'Measure around natural waistline.' },
-            { category: 'trousers', key: 'back_foot', name: 'Back Foot', desc: 'Measure from waist (back) to ankle.' },
-            { category: 'trousers', key: 'foot_round', name: 'Foot Round', desc: 'Measure around ankle opening.' },
-            { category: 'trousers', key: 'knee_round', name: 'Knee Round', desc: 'Measure around knee while standing.' },
-            { category: 'trousers', key: 'hips', name: 'Hips', desc: 'Measure around fullest part of hips.' }
+            { category: 'trousers', key: 'trouser_length', name: 'Trouser Length', desc: '1. Stand straight in bare feet or socks.<br>2. Start the tape at your natural waistline or where you normally wear your trousers.<br>3. Measure down the outside of your leg to the top of the shoe/ankle.' },
+            { category: 'trousers', key: 'lap', name: 'Lap (Thigh)', desc: '1. Stand with legs slightly apart.<br>2. Measure around the very thickest part of your thigh, just below the crotch.<br>3. Ensure the tape is horizontal and not pulling aggressively against the skin.' },
+            { category: 'trousers', key: 'waist', name: 'Waist', desc: '1. Measure around where you normally wear the waistband of your trousers.<br>2. Insert one finger between the tape and your body.<br>3. Keep the tape level and snug, but not cutting in.' },
+            { category: 'trousers', key: 'back_foot', name: 'Back Foot', desc: '1. This is the outseam back measurement.<br>2. Measure from your trouser waistline at the back, straight down the leg to the back of the heel.' },
+            { category: 'trousers', key: 'foot_round', name: 'Foot Round', desc: '1. Wrap the tape diagonally around your heel and instep (top of foot).<br>2. This ensures the pant leg opening will be wide enough to pass your foot through comfortably.' },
+            { category: 'trousers', key: 'knee_round', name: 'Knee Round', desc: '1. Stand naturally without bending the knee.<br>2. Measure exactly around the center of the kneecap.<br>3. Leave a little bit of slack for sitting down comfortably.' },
+            { category: 'trousers', key: 'hips', name: 'Hips', desc: '1. Empty your pockets completely.<br>2. Stand with your feet close together.<br>3. Wrap the tape around the very fullest part of your buttocks and hips, keeping the tape level parallel to the floor.' }
         ]
     },
 
@@ -152,21 +152,25 @@ const MeasurementWizard = {
                 </div>
                 
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-4 mb-md-0">
+                    
+                    <!-- How to Measure (Left on Desktop, Bottom on Mobile) -->
+                    <div class="col-md-6 mb-4 mb-md-0 order-last order-md-first">
                         <div class="glass p-4 rounded-4 border-start border-4 border-warning">
                             <h5 class="text-gold mb-3">📏 How to Measure</h5>
-                            <p class="mb-0">${measurement.desc}</p>
-                            <p class="text-muted small mt-3 mb-0">💡 Tip: You can skip this measurement and come back later</p>
+                            <div class="mb-0 text-muted" style="line-height: 1.6;">${measurement.desc}</div>
                         </div>
                     </div>
                     
-                    <div class="col-md-6">
+                    <!-- Input & Skip Button (Right on Desktop, Top on Mobile) -->
+                    <div class="col-md-6 order-first order-md-last mb-4 mb-md-0">
                         <div class="input-group input-group-lg mb-3">
                             <input type="number" id="measurement_input" class="form-control text-center fw-bold" 
                                 value="${value}" placeholder="0.0 (optional)" step="0.1" autofocus>
                             <span class="input-group-text" style="background: var(--bg-card); color: var(--text-main); border-color: var(--glass-border);">${this.state.data.unit}</span>
                         </div>
-                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="MeasurementWizard.skipCurrent()">Skip This Measurement</button>
+                        <button class="btn btn-outline-secondary btn-sm w-100 mb-2 py-2 fw-bold" onclick="MeasurementWizard.skipCurrent()">
+                            Skip This Measurement
+                        </button>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,13 @@
 // CK STYLE – Supabase Auth + Data
 // No email confirmation required. Signup = immediate login. Email used only for password reset.
 
+// HTML escape utility for XSS prevention in error messages
+function escapeHtmlAuth(str) {
+    if (!str) return '';
+    const s = String(str);
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // Show exact Supabase error message; log full error to console for debugging.
 function authErrorMessage(error, logLabel) {
     if (error == null) return 'Something went wrong.';
@@ -181,7 +188,7 @@ function runAuthHandlers() {
 
                 if (error) {
                     var errMsg = authErrorMessage(error, 'Signup error');
-                    msgDiv.innerHTML = '<div class="alert alert-danger">' + errMsg + '</div>';
+                    msgDiv.innerHTML = '<div class="alert alert-danger">' + escapeHtmlAuth(errMsg) + '</div>';
                     btn.disabled = false;
                     btn.textContent = 'Create Account';
                 } else {
@@ -196,7 +203,7 @@ function runAuthHandlers() {
                 }
             } catch (err) {
                 console.error('Signup error:', err);
-                msgDiv.innerHTML = '<div class="alert alert-danger">' + (err && err.message ? err.message : 'Signup failed. Please try again.') + '</div>';
+                msgDiv.innerHTML = '<div class="alert alert-danger">' + escapeHtmlAuth(err && err.message ? err.message : 'Signup failed. Please try again.') + '</div>';
                 btn.disabled = false;
                 btn.textContent = 'Create Account';
             }
@@ -222,13 +229,13 @@ function runAuthHandlers() {
 
             if (error) {
                 var errMsg = authErrorMessage(error, 'Login error');
-                msgDiv.innerHTML = '<div class="alert alert-danger">' + errMsg + '</div>';
+                msgDiv.innerHTML = '<div class="alert alert-danger">' + escapeHtmlAuth(errMsg) + '</div>';
                 btn.disabled = false;
                 btn.textContent = 'Sign In';
             } else {
                 msgDiv.innerHTML = '<div class="alert alert-success">Login successful! Redirecting...</div>';
                 const urlParams = new URLSearchParams(window.location.search);
-                const redirect = urlParams.get('redirect') || 'index.html';
+                const redirect = sanitizeRedirect(urlParams.get('redirect'));
                 setTimeout(() => { window.location.href = redirect; }, 1000);
             }
         });
