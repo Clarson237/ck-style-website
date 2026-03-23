@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0a0a">
     <meta name="color-scheme" content="light dark">
-    <title>Predict My Measurement | CK STYLE</title>
+    <meta name="description" content="Get AI-predicted body measurements instantly. Enter your details and receive accurate predictions for custom tailoring at CK Style.">
+    <title>Predict My Measurements | CK STYLE</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,63 +27,17 @@
     <script src="js/navbar-engine.js"></script>
 
     <style>
+        /* ── Page hero area ── */
         .predict-hero {
-            padding: 140px 0 100px;
-            min-height: 80vh;
+            padding: 120px 0 80px;
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            background: radial-gradient(circle at bottom left, rgba(197, 160, 89, 0.05), transparent 50%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .status-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 60px 40px;
-            text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
-            max-width: 600px;
-            margin: 0 auto;
-            backdrop-filter: blur(20px);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .status-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .status-icon {
-            font-size: 4rem;
-            color: var(--accent-color);
-            margin-bottom: 30px;
-            display: inline-block;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            background: rgba(197, 160, 89, 0.1);
-            border: 1px solid var(--accent-color);
-            border-radius: 50px;
-            color: var(--accent-color);
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .coming-soon-text {
-            background: linear-gradient(135deg, var(--accent-color), #f0d060);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
+        /* ── Floating background shapes ── */
         .predict-bg-shapes {
             position: fixed;
             top: 0;
@@ -92,101 +47,706 @@
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
-            opacity: 0.4;
         }
 
         .shape {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(100px);
         }
 
         .shape-1 {
-            width: 300px;
-            height: 300px;
+            width: 350px;
+            height: 350px;
             background: var(--accent-color);
-            top: -100px;
-            right: -100px;
-            opacity: 0.1;
+            top: -120px;
+            right: -80px;
+            opacity: 0.08;
+            animation: shapeFloat 18s ease-in-out infinite;
         }
 
         .shape-2 {
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             background: #8B7340;
-            bottom: -150px;
-            left: -100px;
-            opacity: 0.1;
+            bottom: -180px;
+            left: -120px;
+            opacity: 0.08;
+            animation: shapeFloat 22s ease-in-out infinite reverse;
         }
 
-        #loading-state {
+        .shape-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--accent-color);
+            top: 40%;
+            left: 50%;
+            opacity: 0.05;
+            animation: shapeFloat 15s ease-in-out infinite 3s;
+        }
+
+        @keyframes shapeFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 30px) scale(0.95); }
+        }
+
+        /* ── Page header ── */
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid rgba(197, 160, 89, 0.25);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .page-title .accent {
+            background: linear-gradient(135deg, var(--accent-color), #f0d060);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 540px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        /* ── Form card ── */
+        .predict-form-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 48px 40px;
+            max-width: 560px;
+            margin: 0 auto;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardReveal 0.8s 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes cardReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 0.6rem;
+            font-size: 0.92rem;
+        }
+
+        .form-group label i {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .form-group .form-control,
+        .form-group .form-select {
+            background: rgba(var(--bg-main-rgb), 0.6);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group .form-control:focus,
+        .form-group .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+            background: rgba(var(--bg-main-rgb), 0.8);
+            color: var(--text-main);
+        }
+
+        .form-group .form-control.is-invalid,
+        .form-group .form-select.is-invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .invalid-feedback {
+            font-size: 0.8rem;
+            color: #e74c3c;
+            margin-top: 6px;
+        }
+
+        .form-group .form-select option {
+            background: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            .predict-form-card {
+                padding: 32px 24px;
+                margin: 0 8px;
+                border-radius: 20px;
+            }
+        }
+
+        /* ── Submit button ── */
+        .btn-predict {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-color), #e8c84a);
+            border: none;
+            border-radius: 14px;
+            color: #0d0d0d;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        .btn-predict:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── Loading overlay ── */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: rgba(var(--bg-main-rgb), 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeInOverlay 0.4s ease;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Fashion spinner */
+        .fashion-spinner {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .fashion-spinner .ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-radius: 50%;
+        }
+
+        .fashion-spinner .ring:nth-child(1) {
+            border-top-color: var(--accent-color);
+            animation: spinRing 1.2s linear infinite;
+        }
+
+        .fashion-spinner .ring:nth-child(2) {
+            width: 75%;
+            height: 75%;
+            top: 12.5%;
+            left: 12.5%;
+            border-right-color: #f0d060;
+            animation: spinRing 1.6s linear infinite reverse;
+        }
+
+        .fashion-spinner .ring:nth-child(3) {
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 25%;
+            border-bottom-color: var(--accent-color);
+            animation: spinRing 1s linear infinite;
+        }
+
+        .fashion-spinner .spinner-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            animation: pulseIcon 1.5s ease-in-out infinite;
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
+        }
+
+        .loading-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        .loading-dots span:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .loading-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 280px;
+        }
+
+        /* ── Results section ── */
+        .results-section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .results-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Measurement cards grid */
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .measurements-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        .measurement-item {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 24px 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .measurement-item.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .measurement-item:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .measurement-item .m-icon {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
             display: block;
         }
 
-        #auth-state,
-        #guest-state {
-            display: none;
+        .measurement-item .m-name {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .measurement-item .m-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .measurement-item .m-unit {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-left: 2px;
+        }
+
+        /* ── Action buttons ── */
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--accent-color), #e8c84a);
+            border: none;
+            border-radius: 50px;
+            color: #0d0d0d;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-reset {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        /* ── Error toast ── */
+        .error-toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(231, 76, 60, 0.95);
+            color: #fff;
+            padding: 16px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .error-toast.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Footer spacing ── */
+        .predict-footer {
+            margin-top: 60px;
+        }
+
+        /* ── Summary card shown above results ── */
+        .input-summary {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .summary-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(197, 160, 89, 0.1);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .summary-pill i {
+            color: var(--accent-color);
         }
     </style>
 </head>
 
 <body>
     <nav id="main-nav"></nav>
+
     <div class="page-content-wrapper">
+        <!-- Background shapes -->
         <div class="predict-bg-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
         </div>
 
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="fashion-spinner">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <i class="bi bi-scissors spinner-icon"></i>
+            </div>
+            <div class="loading-text">Analyzing Your Measurements...</div>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="loading-sub">Our AI is tailoring predictions based on your unique profile</div>
+        </div>
+
+        <!-- Error Toast -->
+        <div class="error-toast" id="errorToast"></div>
+
         <section class="predict-hero">
-            <div class="container text-center">
-                <!-- Loading State -->
-                <div id="loading-state" class="status-card visible">
-                    <div class="spinner-border text-gold" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Loading...</span>
+            <div class="container">
+                <!-- Form Section -->
+                <div id="formSection" class="text-center">
+                    <div class="page-badge">
+                        <span class="pulse-dot"></span>
+                        AI Measurement Prediction
                     </div>
-                    <h3 class="mt-4 fw-bold">Authenticating...</h3>
+                    <h1 class="page-title">Predict Your <span class="accent">Measurements</span></h1>
+                    <p class="page-subtitle">
+                        Enter your basic details below and let our smart AI engine predict your body measurements
+                        with precision — perfect for custom tailoring.
+                    </p>
+
+                    <div class="predict-form-card">
+                        <form id="predictForm" novalidate>
+                            <!-- Gender -->
+                            <div class="form-group">
+                                <label for="genderInput">
+                                    <i class="bi bi-person-standing"></i>
+                                    Gender
+                                </label>
+                                <select class="form-select" id="genderInput" required>
+                                    <option value="" disabled selected>Select your gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <div class="invalid-feedback">Please select your gender.</div>
+                            </div>
+
+                            <!-- Height & Weight row -->
+                            <div class="input-row">
+                                <div class="form-group">
+                                    <label for="heightInput">
+                                        <i class="bi bi-arrows-vertical"></i>
+                                        Height (cm)
+                                    </label>
+                                    <input type="number" class="form-control" id="heightInput"
+                                        placeholder="e.g. 175" min="50" max="250" step="any" required>
+                                    <div class="invalid-feedback">Enter a valid height (50–250 cm).</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="weightInput">
+                                        <i class="bi bi-speedometer"></i>
+                                        Weight (kg)
+                                    </label>
+                                    <input type="number" class="form-control" id="weightInput"
+                                        placeholder="e.g. 70" min="20" max="300" step="any" required>
+                                    <div class="invalid-feedback">Enter a valid weight (20–300 kg).</div>
+                                </div>
+                            </div>
+
+                            <!-- Age -->
+                            <div class="form-group">
+                                <label for="ageInput">
+                                    <i class="bi bi-calendar-heart"></i>
+                                    Age (years)
+                                </label>
+                                <input type="number" class="form-control" id="ageInput"
+                                    placeholder="e.g. 25" min="1" max="120" step="1" required>
+                                <div class="invalid-feedback">Enter a valid age (1–120, whole number).</div>
+                            </div>
+
+                            <button type="submit" class="btn-predict" id="predictBtn">
+                                <i class="bi bi-cpu"></i>
+                                Predict Measurements
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-                <!-- Logged In State (Coming Soon) -->
-                <div id="auth-state" class="status-card">
-                    <div class="status-badge">AI Integration</div>
-                    <div class="status-icon">
-                        <i class="bi bi-cpu"></i>
+                <!-- Results Section -->
+                <div class="results-section" id="resultsSection">
+                    <div class="results-header">
+                        <div class="page-badge" style="animation: none; opacity: 1;">
+                            <span class="pulse-dot"></span>
+                            Prediction Complete
+                        </div>
+                        <h2 class="page-title" style="font-size: clamp(1.6rem, 4vw, 2.4rem);">
+                            Your Predicted <span class="accent">Measurements</span>
+                        </h2>
+                        <div class="input-summary" id="inputSummary"></div>
+                        <p>Here are your AI-predicted body measurements for custom tailoring.</p>
                     </div>
-                    <h1 class="display-5 fw-bold mb-4 coming-soon-text">Coming Soon!</h1>
-                    <p class="lead text-muted mb-5">
-                        Our engineering team is currently building an advanced AI engine to predict your measurements
-                        with surgical precision using just few information from you(like age hight ...)
-                    </p>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                        <a href="index.html" class="btn btn-outline-gold px-5 py-3 rounded-pill fw-bold">Return Home</a>
-                        <a href="collection.html" class="btn btn-gold px-5 py-3 rounded-pill fw-bold">Browse
-                            Collection</a>
-                    </div>
-                </div>
 
-                <!-- Logged Out State (Login Prompt) -->
-                <div id="guest-state" class="status-card">
-                    <div class="status-badge">Secure Feature</div>
-                    <div class="status-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <h2 class="display-6 fw-bold mb-4">Account Required</h2>
-                    <p class="lead text-muted mb-5">
-                        Please log in to access our Smart Measurement Prediction system. We need your profile data to
-                        provide accurate results.
-                    </p>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                        <a href="login.html" class="btn btn-gold px-5 py-3 rounded-pill fw-bold">Log In Now</a>
-                        <a href="signup.html" class="btn btn-outline-gold px-5 py-3 rounded-pill fw-bold">Create
-                            Account</a>
+                    <div class="measurements-grid" id="measurementsGrid"></div>
+
+                    <div class="results-actions">
+                        <button class="btn-download" id="downloadCsvBtn" onclick="downloadCSV()">
+                            <i class="bi bi-download"></i>
+                            Download as CSV
+                        </button>
+                        <button class="btn-reset" onclick="resetForm()">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            Predict Again
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="py-5 mt-5 border-top border-secondary opacity-50">
+        <footer class="predict-footer py-5 border-top border-secondary opacity-50">
             <div class="container text-center">
                 <p class="small text-muted">&copy; 2026. CK STYLE BESPOKE. ALL RIGHTS RESERVED.</p>
             </div>
@@ -197,43 +757,400 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const loading = document.getElementById('loading-state');
-            const authState = document.getElementById('auth-state');
-            const guestState = document.getElementById('guest-state');
+        // ── State ──
+        let currentResults = null;
+        let currentInputs = null;
+        let usedFallback = false;
 
-            const checkAuth = async () => {
-                try {
-                    // Check local session first
-                    const { data: { session } } = await window.supabaseClient.auth.getSession();
+        // ── Icon map for measurement names ──
+        const measurementIcons = {
+            'chest': 'bi-rulers',
+            'waist': 'bi-circle',
+            'hip': 'bi-diamond-half',
+            'neck': 'bi-vinyl',
+            'shoulder': 'bi-arrows-expand',
+            'arm': 'bi-arrow-down-up',
+            'sleeve': 'bi-arrow-right',
+            'inseam': 'bi-arrows-vertical',
+            'leg': 'bi-arrow-down',
+            'thigh': 'bi-circle-half',
+            'wrist': 'bi-watch',
+            'bicep': 'bi-lightning',
+            'torso': 'bi-person',
+            'back': 'bi-arrows-angle-expand',
+            'bust': 'bi-rulers',
+            'calf': 'bi-chevron-double-down',
+            'ankle': 'bi-circle-square',
+            'knee': 'bi-pentagon',
+        };
 
-                    loading.classList.remove('visible');
-                    setTimeout(() => {
-                        loading.style.display = 'none';
+        function getIcon(name) {
+            const lower = name.toLowerCase();
+            for (const [key, icon] of Object.entries(measurementIcons)) {
+                if (lower.includes(key)) return icon;
+            }
+            return 'bi-rulers';
+        }
 
-                        if (session?.user) {
-                            authState.style.display = 'block';
-                            setTimeout(() => authState.classList.add('visible'), 50);
+        // ── Format measurement name ──
+        function formatName(name) {
+            return name
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        // ── Validation ──
+        function validateForm() {
+            const gender = document.getElementById('genderInput');
+            const height = document.getElementById('heightInput');
+            const weight = document.getElementById('weightInput');
+            const age = document.getElementById('ageInput');
+            let valid = true;
+
+            // Reset
+            [gender, height, weight, age].forEach(el => el.classList.remove('is-invalid'));
+
+            if (!gender.value) {
+                gender.classList.add('is-invalid');
+                valid = false;
+            }
+
+            const h = parseFloat(height.value);
+            if (!height.value || isNaN(h) || h < 50 || h > 250) {
+                height.classList.add('is-invalid');
+                valid = false;
+            }
+
+            const w = parseFloat(weight.value);
+            if (!weight.value || isNaN(w) || w < 20 || w > 300) {
+                weight.classList.add('is-invalid');
+                valid = false;
+            }
+
+            const a = parseInt(age.value, 10);
+            if (!age.value || isNaN(a) || a < 1 || a > 120 || !Number.isInteger(parseFloat(age.value))) {
+                age.classList.add('is-invalid');
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        // ── Show error toast ──
+        function showError(msg) {
+            const toast = document.getElementById('errorToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5500);
+        }
+
+        // ── Fetch with timeout helper ──
+        function fetchWithTimeout(url, options, timeoutMs) {
+            return new Promise((resolve, reject) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => {
+                    controller.abort();
+                    reject(new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`));
+                }, timeoutMs);
+
+                fetch(url, { ...options, signal: controller.signal })
+                    .then(response => {
+                        clearTimeout(timer);
+                        resolve(response);
+                    })
+                    .catch(err => {
+                        clearTimeout(timer);
+                        if (err.name === 'AbortError') {
+                            reject(new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`));
                         } else {
-                            guestState.style.display = 'block';
-                            setTimeout(() => guestState.classList.add('visible'), 50);
+                            reject(err);
                         }
-                    }, 500);
-                } catch (error) {
-                    console.error('Auth check failed:', error);
-                    loading.style.display = 'none';
-                    guestState.style.display = 'block';
-                    guestState.classList.add('visible');
-                }
+                    });
+            });
+        }
+
+        // ── Loading status updater ──
+        function updateLoadingStatus(text, subText) {
+            const statusEl = document.querySelector('.loading-text');
+            const subEl = document.querySelector('.loading-sub');
+            if (statusEl) statusEl.textContent = text;
+            if (subEl && subText) subEl.textContent = subText;
+        }
+
+        // ── Local fallback prediction using anthropometric formulas ──
+        function localPrediction(gender, height, weight, age) {
+            const isMale = gender.toLowerCase() === 'male';
+            const bmi = weight / ((height / 100) ** 2);
+
+            // Body-composition factor (higher BMI → bigger measurements)
+            const bmiBase = isMale ? 22.0 : 21.5;
+            const bmiFactor = 1 + (bmi - bmiBase) * 0.012;
+
+            // Age has a slight influence on waist / torso
+            const ageFactor = age > 30 ? 1 + (age - 30) * 0.001 : 1;
+
+            if (isMale) {
+                return {
+                    chest:          +(height * 0.52  * bmiFactor).toFixed(1),
+                    waist:          +(height * 0.44  * bmiFactor * ageFactor).toFixed(1),
+                    hip:            +(height * 0.52  * bmiFactor).toFixed(1),
+                    neck:           +(height * 0.215 * bmiFactor).toFixed(1),
+                    shoulder:       +(height * 0.27  * bmiFactor).toFixed(1),
+                    sleeve_length:  +(height * 0.34).toFixed(1),
+                    arm_length:     +(height * 0.44).toFixed(1),
+                    inseam:         +(height * 0.45).toFixed(1),
+                    outseam:        +(height * 0.58).toFixed(1),
+                    thigh:          +(height * 0.33 * bmiFactor).toFixed(1),
+                    knee:           +(height * 0.22 * bmiFactor).toFixed(1),
+                    calf:           +(height * 0.21 * bmiFactor).toFixed(1),
+                    ankle:          +(height * 0.13 * bmiFactor).toFixed(1),
+                    wrist:          +(height * 0.095* bmiFactor).toFixed(1),
+                    bicep:          +(height * 0.185* bmiFactor).toFixed(1),
+                    back_length:    +(height * 0.28).toFixed(1),
+                    front_length:   +(height * 0.27).toFixed(1),
+                    torso_length:   +(height * 0.30).toFixed(1),
+                };
+            } else {
+                return {
+                    bust:           +(height * 0.51  * bmiFactor).toFixed(1),
+                    waist:          +(height * 0.40  * bmiFactor * ageFactor).toFixed(1),
+                    hip:            +(height * 0.55  * bmiFactor).toFixed(1),
+                    neck:           +(height * 0.195 * bmiFactor).toFixed(1),
+                    shoulder:       +(height * 0.245 * bmiFactor).toFixed(1),
+                    sleeve_length:  +(height * 0.31).toFixed(1),
+                    arm_length:     +(height * 0.42).toFixed(1),
+                    inseam:         +(height * 0.44).toFixed(1),
+                    outseam:        +(height * 0.57).toFixed(1),
+                    thigh:          +(height * 0.34 * bmiFactor).toFixed(1),
+                    knee:           +(height * 0.22 * bmiFactor).toFixed(1),
+                    calf:           +(height * 0.21 * bmiFactor).toFixed(1),
+                    ankle:          +(height * 0.125* bmiFactor).toFixed(1),
+                    wrist:          +(height * 0.09 * bmiFactor).toFixed(1),
+                    bicep:          +(height * 0.17 * bmiFactor).toFixed(1),
+                    back_length:    +(height * 0.26).toFixed(1),
+                    front_length:   +(height * 0.255).toFixed(1),
+                    torso_length:   +(height * 0.29).toFixed(1),
+                };
+            }
+        }
+
+        // ── Predict with retry ──
+        async function predictMeasurements(e) {
+            e.preventDefault();
+
+            if (!validateForm()) return;
+
+            const gender = document.getElementById('genderInput').value;
+            const height = parseFloat(document.getElementById('heightInput').value);
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            const age = parseInt(document.getElementById('ageInput').value, 10);
+
+            currentInputs = { gender, height, weight, age };
+            usedFallback = false;
+
+            // Show loading
+            const overlay = document.getElementById('loadingOverlay');
+            const btn = document.getElementById('predictBtn');
+            btn.disabled = true;
+            overlay.classList.add('active');
+            updateLoadingStatus(
+                'Analyzing Your Measurements...',
+                'Connecting to our AI prediction engine'
+            );
+
+            const API_URL = 'https://fashion-api-z1fh.onrender.com/predict';
+            const payload = {
+                gender: gender.toLowerCase(),
+                height: height,
+                weight: weight,
+                age: age
+            };
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
             };
 
-            // Wait for Supabase to be ready
-            const timer = setInterval(() => {
-                if (window.supabaseClient) {
-                    clearInterval(timer);
-                    checkAuth();
+            // Retry config: 3 attempts with increasing timeouts
+            const attempts = [
+                { timeout: 15000, label: 'Analyzing Your Measurements...',    sub: 'Connecting to our AI prediction engine' },
+                { timeout: 25000, label: 'Waking up the AI engine...',        sub: 'The server is starting up — this can take a moment' },
+                { timeout: 35000, label: 'Almost there, please hang tight...', sub: 'Final attempt to reach the prediction server' },
+            ];
+
+            let lastError = null;
+
+            for (let i = 0; i < attempts.length; i++) {
+                const { timeout, label, sub } = attempts[i];
+                updateLoadingStatus(label, sub);
+
+                try {
+                    const response = await fetchWithTimeout(API_URL, fetchOptions, timeout);
+
+                    if (!response.ok) {
+                        throw new Error(`Server returned ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    currentResults = data;
+
+                    // Success from API
+                    overlay.classList.remove('active');
+                    displayResults(data);
+                    return;
+
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`Prediction attempt ${i + 1}/${attempts.length} failed:`, error.message);
+
+                    // If not last attempt, wait a beat before retrying
+                    if (i < attempts.length - 1) {
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
                 }
-            }, 100);
+            }
+
+            // All API attempts failed — use local fallback
+            console.warn('All API attempts failed. Using local fallback prediction.');
+            usedFallback = true;
+
+            updateLoadingStatus(
+                'Using offline prediction...',
+                'Generating measurements from our built-in model'
+            );
+            await new Promise(r => setTimeout(r, 1200)); // brief pause for UX
+
+            const fallbackData = localPrediction(gender, height, weight, age);
+            currentResults = fallbackData;
+
+            overlay.classList.remove('active');
+            displayResults(fallbackData);
+        }
+
+        // ── Display results ──
+        function displayResults(data) {
+            const formSection = document.getElementById('formSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const grid = document.getElementById('measurementsGrid');
+            const summary = document.getElementById('inputSummary');
+
+            // Build input summary pills
+            let summaryHTML = `
+                <span class="summary-pill"><i class="bi bi-person-standing"></i> ${currentInputs.gender}</span>
+                <span class="summary-pill"><i class="bi bi-arrows-vertical"></i> ${currentInputs.height} cm</span>
+                <span class="summary-pill"><i class="bi bi-speedometer"></i> ${currentInputs.weight} kg</span>
+                <span class="summary-pill"><i class="bi bi-calendar-heart"></i> ${currentInputs.age} yrs</span>
+            `;
+            if (usedFallback) {
+                summaryHTML += `
+                    <span class="summary-pill" style="background:rgba(231,166,26,0.12);border-color:rgba(231,166,26,0.3);color:#e8a61a;">
+                        <i class="bi bi-info-circle"></i> Offline Estimate
+                    </span>
+                `;
+            }
+            summary.innerHTML = summaryHTML;
+
+            // Build measurement cards
+            grid.innerHTML = '';
+            const entries = Object.entries(data);
+
+            entries.forEach(([key, value], index) => {
+                const numVal = typeof value === 'number' ? value.toFixed(1) : value;
+                const card = document.createElement('div');
+                card.className = 'measurement-item';
+                card.innerHTML = `
+                    <i class="bi ${getIcon(key)} m-icon"></i>
+                    <div class="m-name">${formatName(key)}</div>
+                    <div class="m-value">${numVal}<span class="m-unit">cm</span></div>
+                `;
+                grid.appendChild(card);
+
+                // Stagger animation
+                setTimeout(() => card.classList.add('visible'), 80 * index);
+            });
+
+            // Switch views
+            formSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            // Trigger animation
+            requestAnimationFrame(() => {
+                resultsSection.classList.add('visible');
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── Download CSV ──
+        function downloadCSV() {
+            if (!currentResults) return;
+
+            let csv = 'Measurement,Value (cm)\n';
+            for (const [key, value] of Object.entries(currentResults)) {
+                const numVal = typeof value === 'number' ? value.toFixed(1) : value;
+                csv += `"${formatName(key)}",${numVal}\n`;
+            }
+
+            // Add input data
+            csv += '\n\nInput Details\n';
+            csv += `Gender,${currentInputs.gender}\n`;
+            csv += `Height (cm),${currentInputs.height}\n`;
+            csv += `Weight (kg),${currentInputs.weight}\n`;
+            csv += `Age (years),${currentInputs.age}\n`;
+            if (usedFallback) {
+                csv += '\nNote: These are offline estimates (API was unavailable)\n';
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `CK_Style_Measurements_${currentInputs.gender}_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ── Reset ──
+        function resetForm() {
+            const formSection = document.getElementById('formSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const btn = document.getElementById('predictBtn');
+
+            resultsSection.classList.remove('visible');
+            setTimeout(() => {
+                resultsSection.style.display = 'none';
+                formSection.style.display = 'block';
+                btn.disabled = false;
+                document.getElementById('predictForm').reset();
+                [
+                    document.getElementById('genderInput'),
+                    document.getElementById('heightInput'),
+                    document.getElementById('weightInput'),
+                    document.getElementById('ageInput')
+                ].forEach(el => el.classList.remove('is-invalid'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 400);
+
+            currentResults = null;
+            currentInputs = null;
+            usedFallback = false;
+        }
+
+        // ── Init ──
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('predictForm').addEventListener('submit', predictMeasurements);
+
+            // Remove invalid state on input
+            ['genderInput', 'heightInput', 'weightInput', 'ageInput'].forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', () => el.classList.remove('is-invalid'));
+                el.addEventListener('change', () => el.classList.remove('is-invalid'));
+            });
         });
     </script>
 </body>
